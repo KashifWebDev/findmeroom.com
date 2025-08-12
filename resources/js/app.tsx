@@ -8,7 +8,6 @@ import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ToastViewport from './Components/ToastViewport';
 import { ThemeProvider, initializeTheme } from './hooks/useTheme';
-import { initializeTheme } from './hooks/useTheme';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 const queryClient = new QueryClient();

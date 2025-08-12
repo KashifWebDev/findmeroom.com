@@ -8,7 +8,6 @@ use App\Http\Controllers\{
     ArticleController,
     DashboardController,
 };
-use Laravel\WorkOS\Http\Middleware\ValidateSessionWithWorkOS;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -19,7 +18,6 @@ Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])->midd
 
 Route::middleware([
     'auth',
-    ValidateSessionWithWorkOS::class,
 ])->group(function () {
     Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations.index');
     Route::get('/conversations/{id}', [ConversationController::class, 'show'])->name('conversations.show');

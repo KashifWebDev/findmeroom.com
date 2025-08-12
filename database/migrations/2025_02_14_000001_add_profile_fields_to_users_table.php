@@ -12,14 +12,13 @@ return new class extends Migration
             $table->boolean('is_admin')->default(false);
             $table->string('avatar_url')->nullable();
             $table->text('bio')->nullable();
-            $table->string('password')->nullable();
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['is_admin', 'avatar_url', 'bio', 'password']);
+            $table->dropColumn(['is_admin', 'avatar_url', 'bio']);
         });
     }
 };

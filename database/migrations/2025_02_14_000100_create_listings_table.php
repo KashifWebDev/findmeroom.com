@@ -27,9 +27,9 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['city','country']);
+            $table->index('city');
+            $table->index('country');
             $table->index('currency');
-            $table->fullText(['title','description']);
         });
     }
 

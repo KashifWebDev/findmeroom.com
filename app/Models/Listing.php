@@ -28,4 +28,9 @@ class Listing extends Model
     {
         return $this->hasMany(Conversation::class);
     }
+
+    public function listingPhoto(): HasMany
+    {
+        return $this->hasMany(ListingPhoto::class);
+    }
 }

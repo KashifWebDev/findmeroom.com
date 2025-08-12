@@ -24,6 +24,10 @@ class UserFactory extends Factory
             'workos_id' => 'fake-'.Str::random(10),
             'remember_token' => Str::random(10),
             'avatar' => '',
+            'avatar_url' => fn(array $attrs) => 'https://i.pravatar.cc/150?u='.$attrs['email'],
+            'bio' => fake()->sentence(),
+            'is_admin' => false,
+            'password' => 'password',
         ];
     }
 

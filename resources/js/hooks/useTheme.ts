@@ -1,6 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 export type Theme = 'light' | 'dark';
+
+const ThemeContext = createContext<{ theme: Theme; toggleTheme: () => void }>({
+  theme: 'light',
+  toggleTheme: () => {},
+});
 
 const prefersDark = (): boolean => {
   if (typeof window === 'undefined') {
@@ -17,7 +22,7 @@ export function initializeTheme() {
   }
 }
 
-export function useTheme() {
+function useThemeInternal() {
   const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
@@ -36,4 +41,13 @@ export function useTheme() {
   }, []);
 
   return { theme, toggleTheme } as const;
+}
+
+export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const value = useThemeInternal();
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+};
+
+export function useTheme() {
+  return useContext(ThemeContext);
 }

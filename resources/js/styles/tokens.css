@@ -1,0 +1,72 @@
+:root {
+  /* Color tokens */
+  --color-surface-0: #ffffff;
+  --color-surface-1: #f6f6f6;
+  --color-surface-2: #e5e5e5;
+  --color-surface-3: #d4d4d4;
+
+  --color-text-primary: #111111;
+  --color-text-secondary: #444444;
+  --color-text-muted: #666666;
+
+  --color-brand-primary: #3b82f6;
+  --color-brand-primary-contrast: #ffffff;
+
+  --color-success: #22c55e;
+  --color-warning: #eab308;
+  --color-error: #ef4444;
+
+  /* Spacing scale */
+  --space-4: 0.25rem;
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-24: 1.5rem;
+  --space-32: 2rem;
+  --space-40: 2.5rem;
+  --space-48: 3rem;
+
+  /* Radius scale */
+  --radius-8: 0.5rem;
+  --radius-12: 0.75rem;
+  --radius-16: 1rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.15);
+
+  /* Motion */
+  --motion-duration-120: 120ms;
+  --motion-duration-180: 180ms;
+  --motion-duration-240: 240ms;
+  --motion-duration-320: 320ms;
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Typography */
+  --text-display: clamp(2.5rem, 5vw + 1rem, 3rem);
+  --text-h1: clamp(2rem, 4vw + 1rem, 2.5rem);
+  --text-h2: clamp(1.75rem, 3vw + 1rem, 2rem);
+  --text-h3: clamp(1.5rem, 2vw + 1rem, 1.75rem);
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-caption: 0.75rem;
+}
+
+.dark {
+  --color-surface-0: #0a0a0a;
+  --color-surface-1: #111111;
+  --color-surface-2: #1a1a1a;
+  --color-surface-3: #222222;
+
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #e5e5e5;
+  --color-text-muted: #a3a3a3;
+
+  --color-brand-primary: #3b82f6;
+  --color-brand-primary-contrast: #000000;
+
+  --color-success: #16a34a;
+  --color-warning: #ca8a04;
+  --color-error: #dc2626;
+}

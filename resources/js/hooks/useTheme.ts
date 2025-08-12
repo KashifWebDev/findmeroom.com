@@ -43,10 +43,11 @@ function useThemeInternal() {
   return { theme, toggleTheme } as const;
 }
 
-export const ThemeProvider = ({ children }: React.PropsWithChildren) => {
+export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const value = useThemeInternal();
-  return React.createElement(ThemeContext.Provider, { value }, children);
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
+
 
 export function useTheme() {
   return useContext(ThemeContext);

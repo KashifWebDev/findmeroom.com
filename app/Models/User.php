@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -22,6 +23,10 @@ class User extends Authenticatable
         'email',
         'workos_id',
         'avatar',
+        'avatar_url',
+        'bio',
+        'is_admin',
+        'password',
     ];
 
     /**
@@ -44,6 +49,22 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
+    }
+
+    public function listings(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Listing::class);
+    }
+
+    public function conversations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Conversation::class, 'host_id');
+    }
+
+    public function messages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Message::class, 'sender_id');
     }
 }

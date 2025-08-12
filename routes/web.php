@@ -23,6 +23,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations.index');
     Route::get('/conversations/{id}', [ConversationController::class, 'show'])->name('conversations.show');
+    Route::get('/dashboard', [DashboardController::class, 'user'])->name('dashboard');
     Route::get('/account', [DashboardController::class, 'user'])->name('account.dashboard');
 });
 

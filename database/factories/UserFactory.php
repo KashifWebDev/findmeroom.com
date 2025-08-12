@@ -21,7 +21,6 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'workos_id' => 'fake-'.Str::random(10),
             'remember_token' => Str::random(10),
             'avatar' => '',
             'avatar_url' => fn(array $attrs) => 'https://i.pravatar.cc/150?u='.$attrs['email'],

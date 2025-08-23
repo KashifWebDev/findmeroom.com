@@ -38,8 +38,8 @@ class Listing extends Model implements HasMedia
         'title',
         'slug',
         'description',
-        'rent_monthly_paisa',
-        'deposit_paisa',
+        'rent_monthly',
+        'deposit',
         'bills_included',
         'room_type',
         'gender_pref',
@@ -140,10 +140,20 @@ class Listing extends Model implements HasMedia
             'description' => substr($this->description, 0, 500),
             'city_name' => $this->area->city->name ?? '',
             'area_name' => $this->area->name ?? '',
-            'rent' => $this->rent_monthly_paisa,
+            'rent' => $this->rent_monthly,
             'furnished' => $this->furnished,
             'gender_pref' => $this->gender_pref,
             'verified_level' => $this->verified_level,
         ];
+    }
+
+    public function scopeMinPrice($query, $value)
+    {
+        return $query->where('rent_monthly', '>=', $value);
+    }
+
+    public function scopeMaxPrice($query, $value)
+    {
+        return $query->where('rent_monthly', '<=', $value);
     }
 }

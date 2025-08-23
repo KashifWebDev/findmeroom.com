@@ -131,8 +131,8 @@ class DemoDataSeeder extends Seeder
                     'title' => $title . " #$i",
                     'slug' => Str::slug($title . " $i " . $landlord->user_id),
                     'description' => "A great place to stay for students and professionals. Located in a prime area with easy access to transportation and amenities.",
-                    'rent_monthly_paisa' => fake()->numberBetween(25000, 75000) * 100,
-                    'deposit_paisa' => fake()->numberBetween(15000, 40000) * 100,
+                    'rent_monthly' => fake()->numberBetween(25000, 75000),
+                    'deposit' => fake()->numberBetween(15000, 40000),
                     'bills_included' => fake()->boolean(0.3),
                     'room_type' => fake()->randomElement(['private_room', 'shared_room', 'whole_place']),
                     'gender_pref' => fake()->randomElement(['any', 'male_only', 'female_only']),
@@ -200,7 +200,7 @@ class DemoDataSeeder extends Seeder
             $order = Order::create([
                 'user_id' => fake()->randomElement($landlordUsers)->id,
                 'purpose' => 'boost',
-                'amount_paisa' => fake()->numberBetween(500, 2000) * 100,
+                'amount' => fake()->numberBetween(500, 2000),
                 'currency' => 'PKR',
                 'status' => 'paid',
                 'provider' => 'stripe',
@@ -211,8 +211,8 @@ class DemoDataSeeder extends Seeder
             Payment::create([
                 'order_id' => $order->id,
                 'paid_at' => now(),
-                'amount_paisa' => $order->amount_paisa,
-                'provider_fee_paisa' => fake()->numberBetween(100, 500),
+                'amount' => $order->amount,
+                'provider_fee' => fake()->numberBetween(1, 5),
                 'receipt_url' => 'https://example.com/receipt/' . Str::random(16),
                 'meta' => ['transaction_id' => 'pi_' . Str::random(24)],
             ]);

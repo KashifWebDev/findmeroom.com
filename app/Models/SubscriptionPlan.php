@@ -24,7 +24,7 @@ class SubscriptionPlan extends Model
 
     protected $fillable = [
         'name',
-        'price_paisa',
+        'price',
         'currency',
         'interval',
         'quota_listings',
@@ -32,7 +32,7 @@ class SubscriptionPlan extends Model
     ];
 
     protected $casts = [
-        'price_paisa' => 'integer',
+        'price' => 'decimal:2',
         'quota_listings' => 'integer',
         'quota_boosts' => 'integer',
     ];

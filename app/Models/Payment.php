@@ -13,8 +13,8 @@ class Payment extends Model
     protected $fillable = [
         'order_id',
         'paid_at',
-        'amount_paisa',
-        'provider_fee_paisa',
+        'amount',
+        'provider_fee',
         'receipt_url',
         'meta',
     ];

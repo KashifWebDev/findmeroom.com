@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->foreignId('order_id')->primary()->constrained()->cascadeOnDelete();
             $table->timestamp('paid_at');
-            $table->integer('amount_paisa');
-            $table->integer('provider_fee_paisa')->default(0);
+            $table->decimal('amount', 10, 2);
+            $table->decimal('provider_fee', 10, 2)->default(0);
             $table->text('receipt_url')->nullable();
             $table->json('meta')->nullable();
             $table->timestamps();

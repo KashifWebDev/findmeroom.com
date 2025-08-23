@@ -20,8 +20,8 @@ class PaymentFactory extends Factory
         return [
             'order_id' => Order::factory(),
             'paid_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
-            'amount_paisa' => $this->faker->numberBetween(50000, 2000000),
-            'provider_fee_paisa' => $this->faker->numberBetween(1000, 10000),
+            'amount' => $this->faker->numberBetween(500, 20000),
+            'provider_fee' => $this->faker->numberBetween(10, 100),
             'receipt_url' => $this->faker->optional(0.8)->url(),
             'meta' => [
                 'transaction_id' => $this->faker->uuid(),

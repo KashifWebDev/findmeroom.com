@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('title', 140);
             $table->string('slug', 180)->unique();
             $table->longText('description');
-            $table->integer('rent_monthly_paisa');
-            $table->integer('deposit_paisa')->nullable();
+            $table->decimal('rent_monthly', 10, 2);
+            $table->decimal('deposit', 10, 2)->nullable();
             $table->boolean('bills_included')->default(false);
             $table->enum('room_type', ['private_room', 'shared_room', 'whole_place']);
             $table->enum('gender_pref', ['any', 'male_only', 'female_only'])->default('any');
@@ -41,7 +41,7 @@ return new class extends Migration
             $table->softDeletes();
             
             $table->index(['status', 'verified_level', 'published_at']);
-            $table->index(['area_id', 'rent_monthly_paisa']);
+            $table->index(['area_id', 'rent_monthly']);
             $table->index(['room_type', 'gender_pref', 'furnished']);
             $table->index(['landlord_id', 'published_at']);
         });

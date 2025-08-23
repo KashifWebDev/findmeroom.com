@@ -17,9 +17,9 @@ class BoostPlanFactory extends Factory
     public function definition(): array
     {
         $plans = [
-            ['name' => 'Basic Boost', 'days' => 7, 'price_paisa' => 50000, 'priority' => 1],
-            ['name' => 'Premium Boost', 'days' => 14, 'price_paisa' => 90000, 'priority' => 2],
-            ['name' => 'Super Boost', 'days' => 30, 'price_paisa' => 150000, 'priority' => 3],
+            ['name' => 'Basic Boost', 'days' => 7, 'price' => 500, 'priority' => 1],
+            ['name' => 'Premium Boost', 'days' => 14, 'price' => 900, 'priority' => 2],
+            ['name' => 'Super Boost', 'days' => 30, 'price' => 1500, 'priority' => 3],
         ];
 
         $plan = $this->faker->randomElement($plans);
@@ -27,7 +27,7 @@ class BoostPlanFactory extends Factory
         return [
             'name' => $plan['name'],
             'days' => $plan['days'],
-            'price_paisa' => $plan['price_paisa'],
+            'price' => $plan['price'],
             'currency' => 'PKR',
             'priority' => $plan['priority'],
         ];

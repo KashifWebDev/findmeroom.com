@@ -19,7 +19,7 @@ class OrderFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'amount_paisa' => $this->faker->numberBetween(50000, 2000000),
+            'amount' => $this->faker->numberBetween(500, 20000),
             'currency' => 'PKR',
             'purpose' => $this->faker->randomElement(['boost', 'subscription']),
             'status' => $this->faker->randomElement(['pending', 'paid', 'failed', 'refunded']),

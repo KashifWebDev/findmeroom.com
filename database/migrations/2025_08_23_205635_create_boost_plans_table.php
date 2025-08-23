@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('name');
             $table->unsignedSmallInteger('days');
-            $table->integer('price_paisa');
+            $table->decimal('price', 10, 2);
             $table->char('currency', 3)->default('PKR');
             $table->unsignedSmallInteger('priority')->default(0);
             $table->timestamps();

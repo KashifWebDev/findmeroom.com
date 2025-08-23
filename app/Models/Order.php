@@ -25,7 +25,7 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
-        'amount_paisa',
+        'amount',
         'currency',
         'purpose',
         'status',
@@ -35,7 +35,7 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'amount_paisa' => 'integer',
+        'amount' => 'decimal:2',
         'meta' => 'array',
     ];
 

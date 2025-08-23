@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name');
-            $table->integer('price_paisa');
+            $table->decimal('price', 10, 2);
             $table->char('currency', 3)->default('PKR');
             $table->enum('interval', ['month', 'year']);
             $table->integer('quota_listings')->default(0);

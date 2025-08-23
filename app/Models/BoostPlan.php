@@ -25,14 +25,14 @@ class BoostPlan extends Model
     protected $fillable = [
         'name',
         'days',
-        'price_paisa',
+        'price',
         'currency',
         'priority',
     ];
 
     protected $casts = [
         'days' => 'integer',
-        'price_paisa' => 'integer',
+        'price' => 'decimal:2',
         'priority' => 'integer',
     ];
 

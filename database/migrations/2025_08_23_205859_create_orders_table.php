@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->foreignId('user_id')->constrained()->restrictOnDelete();
-            $table->integer('amount_paisa');
+            $table->decimal('amount', 10, 2);
             $table->char('currency', 3)->default('PKR');
             $table->enum('purpose', ['boost', 'subscription']);
             $table->enum('status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');

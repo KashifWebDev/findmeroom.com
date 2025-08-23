@@ -20,20 +20,42 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'workos_id' => 'fake-'.Str::random(10),
-            'remember_token' => Str::random(10),
-            'avatar' => '',
+            'phone_e164' => '+92' . fake()->numberBetween(3000000000, 3999999999),
+            'password' => bcrypt('password'),
+            'role' => fake()->randomElement(['admin', 'landlord', 'tenant', 'agent']),
+            'status' => 'active',
+            'last_login_at' => fake()->optional()->dateTimeBetween('-1 month', 'now'),
+            'meta' => [],
         ];
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Indicate that the user is an admin.
      */
-    public function unverified(): static
+    public function admin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
+            'role' => 'admin',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a landlord.
+     */
+    public function landlord(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'landlord',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a tenant.
+     */
+    public function tenant(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'tenant',
         ]);
     }
 }

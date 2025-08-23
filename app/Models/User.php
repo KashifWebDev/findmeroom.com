@@ -3,14 +3,22 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Scout\Searchable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasUuids, HasRoles, LogsActivity, InteractsWithMedia, Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -20,8 +28,12 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'workos_id',
-        'avatar',
+        'phone_e164',
+        'password',
+        'role',
+        'status',
+        'last_login_at',
+        'meta',
     ];
 
     /**
@@ -30,7 +42,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'workos_id',
+        'password',
         'remember_token',
     ];
 
@@ -42,8 +54,39 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'last_login_at' => 'datetime',
+            'meta' => 'array',
+        ];
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'email', 'phone_e164', 'role', 'status'])
+            ->logOnlyDirty();
+    }
+
+    public function tenant(): HasOne
+    {
+        return $this->hasOne(Tenant::class);
+    }
+
+    public function landlord(): HasOne
+    {
+        return $this->hasOne(Landlord::class);
+    }
+
+    public function verification(): HasOne
+    {
+        return $this->hasOne(Verification::class);
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
         ];
     }
 }

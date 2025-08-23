@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('area_id')->nullable()->constrained()->restrictOnDelete();
             $table->foreignId('campus_id')->nullable()->constrained()->restrictOnDelete();
             $table->string('name', 100);
-            $table->json('filters');
+            $table->json('filters')->nullable();
             $table->enum('notify_channel', ['email', 'whatsapp', 'sms'])->default('email');
             $table->timestamp('last_notified_at')->nullable();
             $table->timestamps();

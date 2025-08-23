@@ -21,7 +21,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'landlord', 'tenant', 'agent'])->default('tenant');
             $table->enum('status', ['active', 'suspended', 'deleted'])->default('active');
             $table->timestamp('last_login_at')->nullable();
-            $table->json('meta')->default('{}');
+            $table->json('meta')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

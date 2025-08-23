@@ -1,0 +1,14 @@
+{
+  "title": "Beautiful 2-Bedroom Apartment in Gulberg",
+  "description": "A spacious and modern 2-bedroom apartment located in the heart of Gulberg. This apartment features high-quality finishes, modern appliances, and a great location near shopping centers and restaurants.",
+  "rent_monthly": 25000,
+  "deposit": 50000,
+  "bills_included": true,
+  "room_type": "whole_place",
+  "gender_pref": "any",
+  "furnished": true,
+  "available_from": "2024-01-01",
+  "available_to": "2024-12-31",
+  "lat": 31.5204,
+  "lng": 74.3587
+}

@@ -22,8 +22,8 @@ class LandlordFactory extends Factory
             'company_name' => $this->faker->optional(0.7)->company(),
             'contact_name' => $this->faker->optional(0.8)->name(),
             'response_time_minutes' => $this->faker->optional(0.6)->numberBetween(1, 1440),
-            'rating_avg' => $this->faker->optional(0.5)->randomFloat(2, 1, 5),
-            'rating_count' => $this->faker->optional(0.5)->numberBetween(0, 100),
+            'rating_avg' => $this->faker->randomFloat(2, 1, 5),
+            'rating_count' => $this->faker->numberBetween(0, 100),
         ];
     }
 }

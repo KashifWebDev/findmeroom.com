@@ -86,7 +86,7 @@ class Listing extends Model implements HasMedia
             ->useDisk('public');
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
             ->width(320)
@@ -99,7 +99,7 @@ class Listing extends Model implements HasMedia
 
     public function landlord(): BelongsTo
     {
-        return $this->belongsTo(Landlord::class);
+        return $this->belongsTo(Landlord::class, 'landlord_id', 'user_id');
     }
 
     public function area(): BelongsTo

@@ -54,8 +54,8 @@ class ListingFactory extends Factory
             'distance_to_campus_m' => $this->faker->optional(0.6)->numberBetween(100, 5000),
             'available_from' => $this->faker->optional(0.8)->dateTimeBetween('now', '+2 months'),
             'available_to' => $this->faker->optional(0.5)->dateTimeBetween('+3 months', '+1 year'),
-            'views_count' => $this->faker->optional(0.7)->numberBetween(0, 1000),
-            'favourites_count' => $this->faker->optional(0.7)->numberBetween(0, 100),
+            'views_count' => $this->faker->numberBetween(0, 1000),
+            'favourites_count' => $this->faker->numberBetween(0, 100),
             'published_at' => $this->faker->optional(0.6)->dateTimeBetween('-1 month', 'now'),
         ];
     }

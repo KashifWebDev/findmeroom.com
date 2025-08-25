@@ -24,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->api(append: [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            // Sanctum middleware removed as it doesn't exist in Laravel 11
         ]);
 
         $middleware->alias([

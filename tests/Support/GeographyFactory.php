@@ -43,6 +43,7 @@ class GeographyFactory
             'name' => $name,
             'region_id' => $region->id,
             'uuid' => Str::uuid(),
+            'slug' => Str::slug($name),
         ]);
     }
     
@@ -56,6 +57,7 @@ class GeographyFactory
             'name' => $name,
             'city_id' => $city->id,
             'uuid' => Str::uuid(),
+            'slug' => Str::slug($name),
         ]);
     }
     
@@ -67,8 +69,9 @@ class GeographyFactory
         
         return Campus::create([
             'name' => $name,
-            'area_id' => $area->id,
+            'city_id' => $area->city_id,
             'uuid' => Str::uuid(),
+            'slug' => Str::slug($name),
         ]);
     }
     

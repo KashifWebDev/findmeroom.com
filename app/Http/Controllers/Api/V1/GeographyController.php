@@ -21,7 +21,7 @@ class GeographyController extends Controller
             $query->where('region_id', $request->region_id);
         }
         
-        $cities = $query->select('id', 'name', 'region_id')->get();
+        $cities = $query->select('id', 'uuid', 'name', 'region_id', 'created_at', 'updated_at')->get();
         
         return $this->ok($cities);
     }
@@ -33,7 +33,7 @@ class GeographyController extends Controller
         ]);
         
         $areas = Area::where('city_id', $request->city_id)
-            ->select('id', 'name', 'city_id')
+            ->select('id', 'uuid', 'name', 'city_id', 'created_at', 'updated_at')
             ->get();
         
         return $this->ok($areas);
@@ -47,7 +47,7 @@ class GeographyController extends Controller
             $query->where('city_id', $request->city_id);
         }
         
-        $campuses = $query->select('id', 'name', 'city_id')->get();
+        $campuses = $query->select('id', 'uuid', 'name', 'city_id', 'created_at', 'updated_at')->get();
         
         return $this->ok($campuses);
     }

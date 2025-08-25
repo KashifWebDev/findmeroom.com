@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Scout\Searchable;
+use Laravel\Sanctum\HasApiTokens;
+
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
@@ -18,7 +19,7 @@ use Illuminate\Support\Str;
 class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, LogsActivity, InteractsWithMedia, Searchable;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles, LogsActivity, InteractsWithMedia;
 
     protected static function boot()
     {
@@ -92,12 +93,5 @@ class User extends Authenticatable implements HasMedia
         return $this->hasOne(Verification::class);
     }
 
-    public function toSearchableArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-        ];
-    }
+
 }

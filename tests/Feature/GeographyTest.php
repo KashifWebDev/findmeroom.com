@@ -35,7 +35,7 @@ test('cities endpoint returns correct response structure', function () {
 test('areas endpoint returns correct response structure', function () {
     $geography = GeographyFactory::createFullGeography();
     
-    $response = $this->getJson('/api/v1/areas');
+    $response = $this->getJson('/api/v1/areas?city_id=' . $geography['city']->id);
     
     $response->assertOk()
         ->assertJsonStructure([
@@ -70,7 +70,7 @@ test('campuses endpoint returns correct response structure', function () {
                     'id',
                     'uuid',
                     'name',
-                    'area_id',
+                    'city_id',
                     'created_at',
                     'updated_at',
                 ],

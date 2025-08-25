@@ -13,6 +13,12 @@ class WebhookPaymentsController extends Controller
 
     public function handle(Request $request, string $provider)
     {
+        // Validate provider
+        $validProviders = array_keys(config('payments.providers', []));
+        if (!in_array($provider, $validProviders)) {
+            return $this->fail('INVALID_PROVIDER', 'Invalid payment provider', null, 400);
+        }
+        
         // Verify webhook secret
         $secret = config("payments.providers.{$provider}.secret");
         if (!$secret || $request->header('X-Webhook-Secret') !== $secret) {

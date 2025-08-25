@@ -16,7 +16,7 @@ beforeEach(function () {
     $this->geography = GeographyFactory::createFullGeography();
     $this->user = $this->makeLandlord();
     $this->listing = Listing::factory()->create([
-        'landlord_id' => $this->user->landlord->id,
+        'landlord_id' => $this->user->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),

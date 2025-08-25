@@ -27,8 +27,9 @@ class EnquiryStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'listing_uuid' => 'required|exists:listings,uuid',
+            'listing_id' => 'required|exists:listings,uuid',
             'message' => 'required|string|max:2000',
+            'preferred_contact' => 'nullable|string|in:email,phone,whatsapp',
         ];
     }
 

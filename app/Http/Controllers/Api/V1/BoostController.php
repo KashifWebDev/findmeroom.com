@@ -15,6 +15,25 @@ class BoostController extends Controller
 {
     use ApiResponse;
 
+    public function plans()
+    {
+        $plans = BoostPlan::orderBy('priority')->get();
+        
+        $items = $plans->map(function ($plan) {
+            return [
+                'id' => $plan->id,
+                'uuid' => $plan->uuid,
+                'name' => $plan->name,
+                'days' => $plan->days,
+                'price' => $plan->price,
+                'currency' => $plan->currency,
+                'priority' => $plan->priority,
+            ];
+        });
+        
+        return $this->ok($items);
+    }
+
     public function index()
     {
         $boosts = Boost::whereHas('listing', function ($query) {
@@ -48,19 +67,30 @@ class BoostController extends Controller
     {
         $data = $request->validated();
         
-        $listing = Listing::where('uuid', $data['listing_uuid'])->firstOrFail();
-        $plan = BoostPlan::findOrFail($data['plan_id']);
+        $listing = Listing::where('uuid', $data['listing_id'])->firstOrFail();
+        $plan = BoostPlan::where('uuid', $data['plan_id'])->firstOrFail();
+        
+        // Check if user owns the listing
+        if ($listing->landlord_id !== auth()->id()) {
+            return $this->fail('FORBIDDEN', 'You do not own this listing', null, 403);
+        }
         
         // Create order using service
         $orderService = app(OrderService::class);
         $order = $orderService->createBoostOrder(auth()->user(), $listing, $plan);
         
-        // Return order details with fake payment URL
+        // Return order details
         return $this->created([
-            'order_uuid' => $order->uuid,
-            'amount' => $order->amount,
+            'id' => $order->id,
+            'uuid' => $order->uuid,
+            'amount' => number_format($order->amount, 2, '.', ''),
             'currency' => $order->currency,
-            'payment_url' => 'https://example.com/pay/' . $order->uuid, // Placeholder
+            'purpose' => $order->purpose,
+            'status' => $order->status,
+            'provider' => $order->provider,
+            'provider_ref' => $order->provider_ref,
+            'created_at' => $order->created_at->toISOString(),
+            'updated_at' => $order->updated_at->toISOString(),
         ]);
     }
 }

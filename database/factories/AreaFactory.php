@@ -28,8 +28,8 @@ class AreaFactory extends Factory
         
         return [
             'city_id' => City::factory(),
-            'name' => $name,
-            'slug' => Str::slug($name),
+            'name' => $name . '_' . Str::random(4),
+            'slug' => Str::slug($name . '_' . Str::random(4)),
         ];
     }
 }

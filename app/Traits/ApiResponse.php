@@ -12,7 +12,7 @@ trait ApiResponse
         return response()->json([
             'ok' => true,
             'data' => $data,
-            'meta' => $meta,
+            'meta' => empty($meta) ? null : $meta,
         ], $code);
     }
 

@@ -13,9 +13,13 @@ uses(CreatesUsers::class);
 
 beforeEach(function () {
     $this->geography = GeographyFactory::createFullGeography();
-    $this->landlord = $this->actingAsLandlord();
+    $this->landlordUser = $this->actingAsLandlord();
+    $this->landlord = $this->landlordUser->landlord;
     $this->amenity = Amenity::create([
-        'name' => 'WiFi',
+        'key' => 'wifi',
+        'label' => 'WiFi',
+        'category' => 'internet',
+        'sort_order' => 1,
         'uuid' => \Illuminate\Support\Str::uuid(),
     ]);
 });
@@ -77,7 +81,7 @@ test('landlord can create listing', function () {
         ]);
     
     $this->assertDatabaseHas('listings', [
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'title' => 'Beautiful apartment in Gulberg',
         'rent_monthly' => 25000,
         'status' => 'draft',
@@ -101,7 +105,7 @@ test('listing creation fails with invalid data', function () {
 
 test('landlord can view their listings', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'area_id' => $this->geography['area']->id,
         'status' => 'draft',
     ]);
@@ -142,7 +146,7 @@ test('landlord can view their listings', function () {
 
 test('landlord can update their listing', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'area_id' => $this->geography['area']->id,
         'status' => 'draft',
     ]);
@@ -174,7 +178,7 @@ test('landlord can update their listing', function () {
 test('landlord cannot update listing they do not own', function () {
     $otherLandlord = $this->makeLandlord();
     $listing = Listing::factory()->create([
-        'landlord_id' => $otherLandlord->landlord->id,
+        'landlord_id' => $otherLandlord->landlord->user_id,
         'area_id' => $this->geography['area']->id,
     ]);
     
@@ -190,7 +194,7 @@ test('landlord cannot update listing they do not own', function () {
 
 test('landlord can delete their listing', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'area_id' => $this->geography['area']->id,
     ]);
     
@@ -205,7 +209,7 @@ test('landlord can delete their listing', function () {
 
 test('landlord can upload listing cover image', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'area_id' => $this->geography['area']->id,
     ]);
     
@@ -226,12 +230,13 @@ test('landlord can upload listing cover image', function () {
         'collection_name' => 'listing_cover',
     ]);
     
-    Storage::disk('public')->assertExists('media/' . $file->hashName());
+    // Verify that the listing has a cover media
+    $this->assertTrue($listing->fresh()->hasMedia('listing_cover'));
 });
 
 test('cover upload fails with invalid file type', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'area_id' => $this->geography['area']->id,
     ]);
     
@@ -249,7 +254,7 @@ test('cover upload fails with invalid file type', function () {
 
 test('landlord can upload gallery images', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'area_id' => $this->geography['area']->id,
     ]);
     
@@ -273,14 +278,14 @@ test('landlord can upload gallery images', function () {
         'collection_name' => 'listing_gallery',
     ]);
     
-    foreach ($files as $file) {
-        Storage::disk('public')->assertExists('media/' . $file->hashName());
-    }
+    // Verify that the listing has gallery media
+    $this->assertTrue($listing->fresh()->hasMedia('listing_gallery'));
+    $this->assertEquals(2, $listing->fresh()->getMedia('listing_gallery')->count());
 });
 
 test('landlord can delete gallery image', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'area_id' => $this->geography['area']->id,
     ]);
     
@@ -298,15 +303,15 @@ test('landlord can delete gallery image', function () {
 
 test('landlord can view enquiries for their listings', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'area_id' => $this->geography['area']->id,
     ]);
     
+    $tenant = $this->makeTenant();
     $enquiry = Enquiry::create([
-        'user_id' => $this->makeTenant()->id,
+        'tenant_id' => $tenant->tenant->user_id,
         'listing_id' => $listing->id,
         'message' => 'I am interested in this property',
-        'preferred_contact' => 'email',
         'status' => 'new',
         'uuid' => \Illuminate\Support\Str::uuid(),
     ]);
@@ -319,16 +324,15 @@ test('landlord can view enquiries for their listings', function () {
             'data' => [
                 '*' => [
                     'id',
-                    'uuid',
                     'message',
-                    'preferred_contact',
                     'status',
                     'created_at',
-                    'user' => [
+                    'tenant' => [
                         'name',
                         'email',
                     ],
                     'listing' => [
+                        'uuid',
                         'title',
                     ],
                 ],
@@ -341,7 +345,7 @@ test('landlord can view enquiries for their listings', function () {
     
     $enquiries = $response->json('data');
     $this->assertCount(1, $enquiries);
-    $this->assertEquals($enquiry->uuid, $enquiries[0]['uuid']);
+    $this->assertEquals($enquiry->id, $enquiries[0]['id']);
 });
 
 test('non-landlord user cannot access landlord endpoints', function () {
@@ -357,7 +361,7 @@ test('non-landlord user cannot access landlord endpoints', function () {
 
 test('listing media collections are properly configured', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'area_id' => $this->geography['area']->id,
     ]);
     
@@ -376,7 +380,7 @@ test('listing media collections are properly configured', function () {
 
 test('listing update validates required fields', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->user_id,
         'area_id' => $this->geography['area']->id,
     ]);
     

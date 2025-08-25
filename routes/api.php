@@ -60,6 +60,7 @@ Route::prefix('v1')->name('api.v1.')->middleware(['throttle:api'])->group(functi
         Route::get('/me/enquiries', [LandlordEnquiryController::class, 'index']);
         
         // Boosts
+        Route::get('/me/boosts/plans', [BoostController::class, 'plans']);
         Route::get('/me/boosts', [BoostController::class, 'index']);
         Route::post('/me/boosts', [BoostController::class, 'store']);
     });

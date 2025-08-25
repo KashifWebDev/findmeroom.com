@@ -13,7 +13,7 @@ class OrderService
 {
     public function createBoostOrder(User $user, Listing $listing, BoostPlan $plan): Order
     {
-        return Order::create([
+        $order = Order::create([
             'user_id' => $user->id,
             'purpose' => 'boost',
             'amount' => $plan->price,
@@ -26,6 +26,15 @@ class OrderService
                 'listing_id' => $listing->id,
             ],
         ]);
+
+        // Log activity
+        activity()
+            ->performedOn($order)
+            ->causedBy($user)
+            ->event('order.created')
+            ->log("Boost order created for listing {$listing->title}");
+
+        return $order;
     }
 
     public function confirmPayment(string $provider, array $payload): void

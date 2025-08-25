@@ -16,13 +16,13 @@ beforeEach(function () {
 
 test('admin can view all listings for moderation', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'draft',
     ]);
@@ -64,9 +64,9 @@ test('admin can view all listings for moderation', function () {
 
 test('admin can approve listing', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
     ]);
     
     $response = $this->postJson('/api/v1/admin/listings/' . $listing->uuid . '/approve', [
@@ -81,15 +81,18 @@ test('admin can approve listing', function () {
     $this->assertDatabaseHas('listings', [
         'id' => $listing->id,
         'status' => 'published',
-        'published_at' => now()->toDateString(),
     ]);
+    
+    $listing->refresh();
+    $this->assertNotNull($listing->published_at);
+    $this->assertEquals(now()->toDateString(), $listing->published_at->toDateString());
 });
 
 test('admin can reject listing', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
     ]);
     
     $response = $this->postJson('/api/v1/admin/listings/' . $listing->uuid . '/reject', [
@@ -109,9 +112,9 @@ test('admin can reject listing', function () {
 
 test('listing approval requires reason', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
     ]);
     
     $response = $this->postJson('/api/v1/admin/listings/' . $listing->uuid . '/approve', []);
@@ -127,9 +130,9 @@ test('listing approval requires reason', function () {
 
 test('listing rejection requires reason', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
     ]);
     
     $response = $this->postJson('/api/v1/admin/listings/' . $listing->uuid . '/reject', []);
@@ -145,7 +148,7 @@ test('listing rejection requires reason', function () {
 
 test('admin cannot approve already published listing', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -163,7 +166,7 @@ test('admin cannot approve already published listing', function () {
 
 test('admin cannot reject already rejected listing', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'rejected',
     ]);
@@ -202,9 +205,9 @@ test('landlord cannot access admin endpoints', function () {
 
 test('admin moderation activity is logged', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
     ]);
     
     $this->postJson('/api/v1/admin/listings/' . $listing->uuid . '/approve', [
@@ -220,9 +223,9 @@ test('admin moderation activity is logged', function () {
     
     // Test rejection logging
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
     ]);
     
     $this->postJson('/api/v1/admin/listings/' . $listing2->uuid . '/reject', [
@@ -239,9 +242,9 @@ test('admin moderation activity is logged', function () {
 
 test('admin can view listing details for moderation', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
     ]);
     
     $response = $this->getJson('/api/v1/admin/listings');
@@ -252,19 +255,23 @@ test('admin can view listing details for moderation', function () {
     $moderatedListing = collect($listings)->firstWhere('uuid', $listing->uuid);
     
     $this->assertNotNull($moderatedListing);
-    $this->assertEquals('pending_review', $moderatedListing['status']);
+    $this->assertEquals('review', $moderatedListing['status']);
     $this->assertEquals($listing->title, $moderatedListing['title']);
 });
 
 test('admin moderation updates listing timestamps correctly', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
         'created_at' => now()->subDays(5),
+        'updated_at' => now()->subDays(5),
     ]);
     
     $originalUpdatedAt = $listing->updated_at;
+    
+    // Small delay to ensure timestamp difference
+    sleep(1);
     
     $this->postJson('/api/v1/admin/listings/' . $listing->uuid . '/approve', [
         'reason' => 'Listing approved',
@@ -281,15 +288,15 @@ test('admin can moderate listings from different landlords', function () {
     $landlord2 = $this->makeLandlord();
     
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $landlord1->landlord->id,
+        'landlord_id' => $landlord1->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $landlord2->landlord->id,
+        'landlord_id' => $landlord2->id,
         'area_id' => $this->geography['area']->id,
-        'status' => 'pending_review',
+        'status' => 'review',
     ]);
     
     // Approve first listing

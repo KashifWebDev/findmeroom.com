@@ -32,14 +32,14 @@ class ListingMediaController extends Controller
     public function uploadGallery(Request $request, Listing $listing)
     {
         $request->validate([
-            'photos.*' => 'required|image|mimes:jpeg,png,webp|max:8192',
+            'gallery.*' => 'required|image|mimes:jpeg,png,webp|max:8192',
         ], [
-            'photos.*.max' => 'Each photo must be less than 8MB.',
+            'gallery.*.max' => 'Each photo must be less than 8MB.',
         ]);
         
-        $photos = $request->file('photos');
+        $photos = $request->file('gallery');
         
-        if (count($photos) > 10) {
+        if ($photos && count($photos) > 10) {
             return $this->fail('VALIDATION_ERROR', 'Maximum 10 photos allowed per request', null, 422);
         }
         
@@ -70,6 +70,6 @@ class ListingMediaController extends Controller
         
         $media->delete();
         
-        return $this->ok(['message' => 'Media deleted successfully']);
+        return response()->noContent();
     }
 }

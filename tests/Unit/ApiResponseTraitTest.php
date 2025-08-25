@@ -9,6 +9,32 @@ use Illuminate\Support\Collection;
 class TestController
 {
     use ApiResponse;
+    
+    // Make methods public for testing
+    public function testOk($data = null, array $meta = [], int $code = 200): \Illuminate\Http\JsonResponse
+    {
+        return $this->ok($data, $meta, $code);
+    }
+    
+    public function testCreated($data = null, array $meta = []): \Illuminate\Http\JsonResponse
+    {
+        return $this->created($data, $meta);
+    }
+    
+    public function testNoContent(): \Illuminate\Http\JsonResponse
+    {
+        return $this->noContent();
+    }
+    
+    public function testFail(string $code, string $message, ?array $fields = null, int $http = 400): \Illuminate\Http\JsonResponse
+    {
+        return $this->fail($code, $message, $fields, $http);
+    }
+    
+    public function testPaginated(\Illuminate\Contracts\Pagination\LengthAwarePaginator $paginator, $items): \Illuminate\Http\JsonResponse
+    {
+        return $this->paginated($paginator, $items);
+    }
 }
 
 test('ok method returns correct response structure', function () {
@@ -16,7 +42,7 @@ test('ok method returns correct response structure', function () {
     $data = ['message' => 'Success'];
     $meta = ['version' => '1.0'];
     
-    $response = $controller->ok($data, $meta);
+    $response = $controller->testOk($data, $meta);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(200, $response->getStatusCode());
@@ -30,7 +56,7 @@ test('ok method returns correct response structure', function () {
 test('ok method works without data and meta', function () {
     $controller = new TestController();
     
-    $response = $controller->ok();
+    $response = $controller->testOk();
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(200, $response->getStatusCode());
@@ -45,7 +71,7 @@ test('ok method with custom status code', function () {
     $controller = new TestController();
     $data = ['message' => 'Success'];
     
-    $response = $controller->ok($data, [], 201);
+    $response = $controller->testOk($data, [], 201);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(201, $response->getStatusCode());
@@ -60,7 +86,7 @@ test('created method returns correct response structure', function () {
     $data = ['id' => 1, 'name' => 'Created Item'];
     $meta = ['location' => '/api/items/1'];
     
-    $response = $controller->created($data, $meta);
+    $response = $controller->testCreated($data, $meta);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(201, $response->getStatusCode());
@@ -74,7 +100,7 @@ test('created method returns correct response structure', function () {
 test('created method works without data and meta', function () {
     $controller = new TestController();
     
-    $response = $controller->created();
+    $response = $controller->testCreated();
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(201, $response->getStatusCode());
@@ -88,7 +114,7 @@ test('created method works without data and meta', function () {
 test('noContent method returns correct response structure', function () {
     $controller = new TestController();
     
-    $response = $controller->noContent();
+    $response = $controller->testNoContent();
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(204, $response->getStatusCode());
@@ -105,7 +131,7 @@ test('fail method returns correct error response structure', function () {
     $errorMessage = 'Validation failed';
     $fields = ['name' => ['The name field is required.']];
     
-    $response = $controller->fail($errorCode, $errorMessage, $fields, 422);
+    $response = $controller->testFail($errorCode, $errorMessage, $fields, 422);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(422, $response->getStatusCode());
@@ -124,7 +150,7 @@ test('fail method works without fields', function () {
     $errorCode = 'NOT_FOUND';
     $errorMessage = 'Resource not found';
     
-    $response = $controller->fail($errorCode, $errorMessage);
+    $response = $controller->testFail($errorCode, $errorMessage);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(400, $response->getStatusCode());
@@ -137,7 +163,7 @@ test('fail method works without fields', function () {
 test('fail method uses default 400 status code', function () {
     $controller = new TestController();
     
-    $response = $controller->fail('ERROR', 'Something went wrong');
+    $response = $controller->testFail('ERROR', 'Something went wrong');
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(400, $response->getStatusCode());
@@ -146,22 +172,22 @@ test('fail method uses default 400 status code', function () {
 test('fail method with custom status codes', function () {
     $controller = new TestController();
     
-    $response401 = $controller->fail('UNAUTHORIZED', 'Not authenticated', null, 401);
+    $response401 = $controller->testFail('UNAUTHORIZED', 'Not authenticated', null, 401);
     $this->assertEquals(401, $response401->getStatusCode());
     
-    $response403 = $controller->fail('FORBIDDEN', 'Access denied', null, 403);
+    $response403 = $controller->testFail('FORBIDDEN', 'Access denied', null, 403);
     $this->assertEquals(403, $response403->getStatusCode());
     
-    $response404 = $controller->fail('NOT_FOUND', 'Resource not found', null, 404);
+    $response404 = $controller->testFail('NOT_FOUND', 'Resource not found', null, 404);
     $this->assertEquals(404, $response404->getStatusCode());
     
-    $response422 = $controller->fail('VALIDATION_ERROR', 'Validation failed', [], 422);
+    $response422 = $controller->testFail('VALIDATION_ERROR', 'Validation failed', [], 422);
     $this->assertEquals(422, $response422->getStatusCode());
     
-    $response429 = $controller->fail('RATE_LIMITED', 'Too many requests', null, 429);
+    $response429 = $controller->testFail('RATE_LIMITED', 'Too many requests', null, 429);
     $this->assertEquals(429, $response429->getStatusCode());
     
-    $response500 = $controller->fail('SERVER_ERROR', 'Internal server error', null, 500);
+    $response500 = $controller->testFail('SERVER_ERROR', 'Internal server error', null, 500);
     $this->assertEquals(500, $response500->getStatusCode());
 });
 
@@ -172,7 +198,7 @@ test('paginated method returns correct response structure', function () {
     $items = collect(['item1', 'item2', 'item3']);
     $paginator = new Paginator($items, 3, 2, 1);
     
-    $response = $controller->paginated($paginator, $items);
+    $response = $controller->testPaginated($paginator, $items);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(200, $response->getStatusCode());
@@ -183,7 +209,7 @@ test('paginated method returns correct response structure', function () {
     $this->assertEquals(1, $content['meta']['page']);
     $this->assertEquals(2, $content['meta']['per_page']);
     $this->assertEquals(3, $content['meta']['total']);
-    $this->assertEquals(1, $content['meta']['last_page']);
+    $this->assertEquals(2, $content['meta']['last_page']);
 });
 
 test('paginated method with empty results', function () {
@@ -192,7 +218,7 @@ test('paginated method with empty results', function () {
     $items = collect([]);
     $paginator = new Paginator($items, 0, 20, 1);
     
-    $response = $controller->paginated($paginator, $items);
+    $response = $controller->testPaginated($paginator, $items);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(200, $response->getStatusCode());
@@ -212,7 +238,7 @@ test('paginated method with multiple pages', function () {
     $items = collect(['item1', 'item2']);
     $paginator = new Paginator($items, 25, 2, 2);
     
-    $response = $controller->paginated($paginator, $items);
+    $response = $controller->testPaginated($paginator, $items);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals(200, $response->getStatusCode());
@@ -228,7 +254,7 @@ test('paginated method with multiple pages', function () {
 test('response content is valid JSON', function () {
     $controller = new TestController();
     
-    $response = $controller->ok(['test' => 'data']);
+    $response = $controller->testOk(['test' => 'data']);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     
@@ -243,7 +269,7 @@ test('response content is valid JSON', function () {
 test('error response content is valid JSON', function () {
     $controller = new TestController();
     
-    $response = $controller->fail('TEST_ERROR', 'Test error message');
+    $response = $controller->testFail('TEST_ERROR', 'Test error message');
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     
@@ -261,7 +287,7 @@ test('error response content is valid JSON', function () {
 test('response headers are set correctly', function () {
     $controller = new TestController();
     
-    $response = $controller->ok(['test' => 'data']);
+    $response = $controller->testOk(['test' => 'data']);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals('application/json', $response->headers->get('Content-Type'));
@@ -270,7 +296,7 @@ test('response headers are set correctly', function () {
 test('error response headers are set correctly', function () {
     $controller = new TestController();
     
-    $response = $controller->fail('ERROR', 'Error message', null, 422);
+    $response = $controller->testFail('ERROR', 'Error message', null, 422);
     
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals('application/json', $response->headers->get('Content-Type'));

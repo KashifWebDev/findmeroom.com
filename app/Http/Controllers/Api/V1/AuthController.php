@@ -26,6 +26,11 @@ class AuthController extends Controller
             $userData['role'] = 'tenant';
         }
         
+        // Set default status
+        if (!isset($userData['status'])) {
+            $userData['status'] = 'active';
+        }
+        
         $user = User::create($userData);
         
         // Assign role
@@ -40,19 +45,27 @@ class AuthController extends Controller
         // Create tenant/landlord profile if needed
         if ($userData['role'] === 'landlord') {
             $user->landlord()->create([
-                'user_id' => $user->id,
                 'rating_avg' => 0,
                 'rating_count' => 0,
             ]);
         } elseif ($userData['role'] === 'tenant') {
             $user->tenant()->create([
-                'user_id' => $user->id,
                 'preferences' => [],
             ]);
         }
         
         return $this->created([
-            'user' => $user->load('roles'),
+            'user' => [
+                'id' => $user->id,
+                'uuid' => $user->uuid,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone_e164' => $user->phone_e164,
+                'role' => $user->role,
+                'status' => $user->status,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ],
             'token' => $token,
         ]);
     }
@@ -70,31 +83,50 @@ class AuthController extends Controller
         }
         
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'credentials' => ['The provided credentials are incorrect.'],
-            ]);
+            return $this->fail('INVALID_CREDENTIALS', 'The provided credentials are incorrect.', null, 401);
         }
         
         // Create Sanctum token
         $token = $user->createToken('auth-token')->plainTextToken;
         
         return $this->ok([
-            'user' => $user->load('roles'),
+            'user' => [
+                'id' => $user->id,
+                'uuid' => $user->uuid,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone_e164' => $user->phone_e164,
+                'role' => $user->role,
+                'status' => $user->status,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ],
             'token' => $token,
         ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        // Delete all tokens for this user to ensure logout
+        $request->user()->tokens()->delete();
         
-        return $this->ok(['message' => 'Successfully logged out']);
+        return $this->noContent();
     }
 
     public function me(Request $request)
     {
-        $user = $request->user()->load('roles');
+        $user = $request->user();
         
-        return $this->ok($user);
+        return $this->ok([
+            'id' => $user->id,
+            'uuid' => $user->uuid,
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone_e164' => $user->phone_e164,
+            'role' => $user->role,
+            'status' => $user->status,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+        ]);
     }
 }

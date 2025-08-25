@@ -13,16 +13,18 @@ class AdminListingModerationController extends Controller
 
     public function index()
     {
-        $listings = Listing::where('status', 'review')
+        $listings = Listing::whereIn('status', ['review', 'draft'])
             ->with(['landlord.user', 'area.city'])
             ->orderBy('created_at', 'desc')
             ->paginate(20);
         
         $items = $listings->getCollection()->map(function ($listing) {
             return [
+                'id' => $listing->id,
                 'uuid' => $listing->uuid,
                 'title' => $listing->title,
-                'rent_monthly' => $listing->rent_monthly,
+                'status' => $listing->status,
+                'verified_level' => $listing->verified_level,
                 'created_at' => $listing->created_at->toISOString(),
                 'landlord' => [
                     'name' => $listing->landlord->user->name,
@@ -30,7 +32,9 @@ class AdminListingModerationController extends Controller
                 ],
                 'area' => [
                     'name' => $listing->area->name,
-                    'city' => $listing->area->city->name,
+                    'city' => [
+                        'name' => $listing->area->city->name,
+                    ],
                 ],
             ];
         });
@@ -38,25 +42,43 @@ class AdminListingModerationController extends Controller
         return $this->paginated($listings, $items);
     }
 
-    public function approve(Listing $listing)
+    public function approve(Request $request, Listing $listing)
     {
+        $request->validate([
+            'reason' => 'required|string|max:500',
+        ]);
+        
+        if ($listing->status === 'published') {
+            return $this->fail('ALREADY_PUBLISHED', 'Listing is already published', null, 422);
+        }
+        
         $listing->update([
             'status' => 'published',
             'published_at' => now(),
         ]);
         
+        $listing->touch();
+        
         // Log activity
         activity()
             ->performedOn($listing)
             ->causedBy(auth()->user())
-            ->event('listing.published')
-            ->log('Listing approved by admin');
+            ->event('listing.approved')
+            ->log('Listing approved by admin: ' . $request->reason);
         
         return $this->ok(['message' => 'Listing approved successfully']);
     }
 
-    public function reject(Listing $listing)
+    public function reject(Request $request, Listing $listing)
     {
+        $request->validate([
+            'reason' => 'required|string|max:500',
+        ]);
+        
+        if ($listing->status === 'rejected') {
+            return $this->fail('ALREADY_REJECTED', 'Listing is already rejected', null, 422);
+        }
+        
         $listing->update(['status' => 'rejected']);
         
         // Log activity
@@ -64,7 +86,7 @@ class AdminListingModerationController extends Controller
             ->performedOn($listing)
             ->causedBy(auth()->user())
             ->event('listing.rejected')
-            ->log('Listing rejected by admin');
+            ->log('Listing rejected by admin: ' . $request->reason);
         
         return $this->ok(['message' => 'Listing rejected successfully']);
     }

@@ -16,9 +16,14 @@ class CountryFactory extends Factory
      */
     public function definition(): array
     {
+        // Generate unique 2-character country codes
+        do {
+            $code = chr(65 + mt_rand(0, 25)) . chr(65 + mt_rand(0, 25));
+        } while (\App\Models\Country::where('code', $code)->exists());
+        
         return [
-            'code' => 'PK',
-            'name' => 'Pakistan',
+            'code' => $code,
+            'name' => $this->faker->country,
         ];
     }
 }

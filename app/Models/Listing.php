@@ -149,11 +149,17 @@ class Listing extends Model implements HasMedia
 
     public function scopeMinPrice($query, $value)
     {
+        if ($value === null || $value === '' || $value <= 0) {
+            return $query;
+        }
         return $query->where('rent_monthly', '>=', $value);
     }
 
     public function scopeMaxPrice($query, $value)
     {
+        if ($value === null || $value === '' || $value <= 0) {
+            return $query;
+        }
         return $query->where('rent_monthly', '<=', $value);
     }
 }

@@ -16,23 +16,40 @@ class ListingOwnerController extends Controller
 
     public function index()
     {
-        $listings = Listing::where('landlord_id', auth()->id())
+        $user = auth()->user();
+        $landlord = $user->landlord;
+        
+        if (!$landlord) {
+            return $this->fail('FORBIDDEN', 'Only landlords can access this endpoint', null, 403);
+        }
+        
+        // Use the user_id as landlord_id since that's what the schema expects
+        $landlordId = $landlord->user_id ?? $landlord->id ?? $user->id;
+        
+        $listings = Listing::where('landlord_id', $landlordId)
             ->with(['area.city', 'amenities'])
             ->orderBy('created_at', 'desc')
             ->paginate(20);
         
         $items = $listings->getCollection()->map(function ($listing) {
             return [
+                'id' => $listing->id,
                 'uuid' => $listing->uuid,
                 'title' => $listing->title,
+                'slug' => $listing->slug,
                 'status' => $listing->status,
                 'rent_monthly' => $listing->rent_monthly,
-                'city' => $listing->area->city->name ?? null,
-                'area' => $listing->area->name ?? null,
+                'area' => [
+                    'name' => $listing->area->name ?? null,
+                    'city' => [
+                        'name' => $listing->area->city->name ?? null,
+                    ],
+                ],
                 'views_count' => $listing->views_count,
                 'favourites_count' => $listing->favourites_count,
                 'published_at' => $listing->published_at?->toISOString(),
                 'created_at' => $listing->created_at->toISOString(),
+                'updated_at' => $listing->updated_at->toISOString(),
             ];
         });
         
@@ -43,8 +60,18 @@ class ListingOwnerController extends Controller
     {
         $data = $request->validated();
         
+        $user = auth()->user();
+        $landlord = $user->landlord;
+        
+        if (!$landlord) {
+            return $this->fail('FORBIDDEN', 'Only landlords can create listings', null, 403);
+        }
+        
+        // Use the user_id as landlord_id since that's what the schema expects
+        $landlordId = $landlord->user_id ?? $landlord->id ?? $user->id;
+        
         $listing = Listing::create([
-            'landlord_id' => auth()->id(),
+            'landlord_id' => $landlordId,
             'area_id' => $data['area_id'],
             'campus_id' => $data['campus_id'] ?? null,
             'title' => $data['title'],
@@ -90,7 +117,28 @@ class ListingOwnerController extends Controller
             ->event('listing.created')
             ->log('Listing created');
         
-        return $this->created(['uuid' => $listing->uuid]);
+        return $this->created([
+            'id' => $listing->id,
+            'uuid' => $listing->uuid,
+            'title' => $listing->title,
+            'slug' => $listing->slug,
+            'description' => $listing->description,
+            'rent_monthly' => $listing->rent_monthly,
+            'deposit' => $listing->deposit,
+            'bills_included' => $listing->bills_included,
+            'room_type' => $listing->room_type,
+            'gender_pref' => $listing->gender_pref,
+            'furnished' => $listing->furnished,
+            'status' => $listing->status,
+            'area_id' => $listing->area_id,
+            'campus_id' => $listing->campus_id,
+            'available_from' => $listing->available_from?->toISOString(),
+            'available_to' => $listing->available_to?->toISOString(),
+            'lat' => $listing->lat,
+            'lng' => $listing->lng,
+            'created_at' => $listing->created_at->toISOString(),
+            'updated_at' => $listing->updated_at->toISOString(),
+        ]);
     }
 
     public function update(ListingUpdateRequest $request, Listing $listing)
@@ -122,7 +170,28 @@ class ListingOwnerController extends Controller
             ->event('listing.updated')
             ->log('Listing updated');
         
-        return $this->ok(['message' => 'Listing updated successfully']);
+        return $this->ok([
+            'id' => $listing->id,
+            'uuid' => $listing->uuid,
+            'title' => $listing->title,
+            'slug' => $listing->slug,
+            'description' => $listing->description,
+            'rent_monthly' => number_format($listing->rent_monthly, 2, '.', ''),
+            'deposit' => $listing->deposit,
+            'bills_included' => $listing->bills_included,
+            'room_type' => $listing->room_type,
+            'gender_pref' => $listing->gender_pref,
+            'furnished' => $listing->furnished,
+            'status' => $listing->status,
+            'area_id' => $listing->area_id,
+            'campus_id' => $listing->campus_id,
+            'available_from' => $listing->available_from?->toISOString(),
+            'available_to' => $listing->available_to?->toISOString(),
+            'lat' => $listing->lat,
+            'lng' => $listing->lng,
+            'created_at' => $listing->created_at->toISOString(),
+            'updated_at' => $listing->updated_at->toISOString(),
+        ]);
     }
 
     public function destroy(Listing $listing)

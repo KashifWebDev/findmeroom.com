@@ -21,7 +21,6 @@ trait CreatesUsers
         
         Tenant::create([
             'user_id' => $user->id,
-            'uuid' => Str::uuid(),
             'preferences' => ['room_type' => 'private_room'],
         ]);
         
@@ -39,7 +38,6 @@ trait CreatesUsers
         
         Landlord::create([
             'user_id' => $user->id,
-            'uuid' => Str::uuid(),
             'rating_avg' => 4.5,
             'rating_count' => 10,
         ]);

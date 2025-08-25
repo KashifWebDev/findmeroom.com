@@ -13,14 +13,14 @@ uses(CreatesUsers::class);
 
 beforeEach(function () {
     $this->geography = GeographyFactory::createFullGeography();
-    $this->landlord = $this->makeLandlord();
+    $this->landlordUser = $this->makeLandlord();
     $this->service = new ListingQueryService();
 });
 
 test('public index query only includes published listings', function () {
     // Create published listing
     $publishedListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -28,7 +28,7 @@ test('public index query only includes published listings', function () {
     
     // Create draft listing
     $draftListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'draft',
         'published_at' => null,
@@ -51,26 +51,27 @@ test('public index query supports area filtering', function () {
     ]);
     
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
+        'campus_id' => null,
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $otherArea->id,
         'status' => 'published',
         'published_at' => now(),
+        'campus_id' => null,
     ]);
     
     $request = new Request(['area_id' => $this->geography['area']->id]);
     $query = $this->service->publicIndex($request);
-    
     $listings = $query->get();
     
-    $this->assertCount(1, $listings);
-    $this->assertEquals($listing1->id, $listings->first()->id);
+    expect($listings)->toHaveCount(1);
+    expect($listings->first()->id)->toBe($listing1->id);
 });
 
 test('public index query supports city filtering', function () {
@@ -87,14 +88,14 @@ test('public index query supports city filtering', function () {
     ]);
     
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $otherArea->id,
         'status' => 'published',
         'published_at' => now(),
@@ -111,7 +112,7 @@ test('public index query supports city filtering', function () {
 
 test('public index query supports room type filtering', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -119,7 +120,7 @@ test('public index query supports room type filtering', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -137,7 +138,7 @@ test('public index query supports room type filtering', function () {
 
 test('public index query supports gender preference filtering', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -145,7 +146,7 @@ test('public index query supports gender preference filtering', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -163,7 +164,7 @@ test('public index query supports gender preference filtering', function () {
 
 test('public index query supports furnished filtering', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -171,7 +172,7 @@ test('public index query supports furnished filtering', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -189,7 +190,7 @@ test('public index query supports furnished filtering', function () {
 
 test('public index query supports verified level filtering', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -197,11 +198,11 @@ test('public index query supports verified level filtering', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
-        'verified_level' => 'unverified',
+        'verified_level' => 'none',
     ]);
     
     $request = new Request(['verified_level' => 'verified']);
@@ -215,7 +216,7 @@ test('public index query supports verified level filtering', function () {
 
 test('public index query supports title text search', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -223,7 +224,7 @@ test('public index query supports title text search', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -241,7 +242,7 @@ test('public index query supports title text search', function () {
 
 test('public index query supports min price filtering', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -249,7 +250,7 @@ test('public index query supports min price filtering', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -267,7 +268,7 @@ test('public index query supports min price filtering', function () {
 
 test('public index query supports max price filtering', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -275,7 +276,7 @@ test('public index query supports max price filtering', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -293,14 +294,14 @@ test('public index query supports max price filtering', function () {
 
 test('public index query supports sorting by published_at', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now()->subDays(2),
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now()->subDays(1),
@@ -318,7 +319,7 @@ test('public index query supports sorting by published_at', function () {
 
 test('public index query supports sorting by rent_monthly', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -326,7 +327,7 @@ test('public index query supports sorting by rent_monthly', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -345,7 +346,7 @@ test('public index query supports sorting by rent_monthly', function () {
 
 test('public index query includes relationships', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -364,7 +365,7 @@ test('public index query includes relationships', function () {
 
 test('public index query handles multiple filters', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -374,7 +375,7 @@ test('public index query handles multiple filters', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlordUser->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),

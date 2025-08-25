@@ -27,8 +27,8 @@ class BoostStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'listing_uuid' => 'required|exists:listings,uuid',
-            'plan_id' => 'required|exists:boost_plans,id',
+            'listing_id' => 'required|exists:listings,uuid',
+            'plan_id' => 'required|exists:boost_plans,uuid',
         ];
     }
 

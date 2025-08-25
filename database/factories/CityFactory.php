@@ -22,8 +22,8 @@ class CityFactory extends Factory
         
         return [
             'region_id' => Region::factory(),
-            'name' => $name,
-            'slug' => Str::slug($name),
+            'name' => $name . '_' . Str::random(4),
+            'slug' => Str::slug($name . '_' . Str::random(4)),
         ];
     }
 }

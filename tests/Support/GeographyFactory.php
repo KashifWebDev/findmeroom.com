@@ -13,8 +13,10 @@ class GeographyFactory
 {
     public static function createCountry(string $name = 'Pakistan'): Country
     {
-        // Generate 2-character codes to fit the database constraint
-        $randomCode = chr(65 + rand(0, 25)) . chr(65 + rand(0, 25)); // AA-ZZ
+        // Create truly unique country code by checking what exists
+        do {
+            $randomCode = chr(65 + mt_rand(0, 25)) . chr(65 + mt_rand(0, 25));
+        } while (Country::where('code', $randomCode)->exists());
         
         return Country::create([
             'name' => $name . '_' . Str::random(4),
@@ -80,22 +82,26 @@ class GeographyFactory
     
     public static function createFullGeography(): array
     {
-        // Check if geography data already exists
+        // Check if geography data already exists and reuse it
         $existingCountry = Country::first();
         if ($existingCountry) {
             $existingRegion = Region::where('country_id', $existingCountry->id)->first();
-            $existingCity = City::where('region_id', $existingRegion->id)->first();
-            $existingArea = Area::where('city_id', $existingCity->id)->first();
-            $existingCampus = Campus::where('city_id', $existingCity->id)->first();
-            
-            if ($existingRegion && $existingCity && $existingArea) {
-                return [
-                    'country' => $existingCountry,
-                    'region' => $existingRegion,
-                    'city' => $existingCity,
-                    'area' => $existingArea,
-                    'campus' => $existingCampus,
-                ];
+            if ($existingRegion) {
+                $existingCity = City::where('region_id', $existingRegion->id)->first();
+                if ($existingCity) {
+                    $existingArea = Area::where('city_id', $existingCity->id)->first();
+                    $existingCampus = Campus::where('city_id', $existingCity->id)->first();
+                    
+                    if ($existingArea) {
+                        return [
+                            'country' => $existingCountry,
+                            'region' => $existingRegion,
+                            'city' => $existingCity,
+                            'area' => $existingArea,
+                            'campus' => $existingCampus,
+                        ];
+                    }
+                }
             }
         }
         

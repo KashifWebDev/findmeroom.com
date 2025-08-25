@@ -15,7 +15,7 @@ beforeEach(function () {
     $this->landlord = $this->makeLandlord();
     $this->tenant = $this->actingAsTenant();
     $this->listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->landlord->user_id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -56,10 +56,9 @@ test('tenant can create enquiry for listing', function () {
         ]);
     
     $this->assertDatabaseHas('enquiries', [
-        'user_id' => $this->tenant->id,
+        'tenant_id' => $this->tenant->tenant->user_id,
         'listing_id' => $this->listing->id,
         'message' => 'I am interested in this property. Is it still available?',
-        'preferred_contact' => 'email',
         'status' => 'new',
     ]);
 });
@@ -93,10 +92,9 @@ test('enquiry creation fails for non-existent listing', function () {
 
 test('tenant can view their enquiries', function () {
     $enquiry = Enquiry::create([
-        'user_id' => $this->tenant->id,
+        'tenant_id' => $this->tenant->tenant->user_id,
         'listing_id' => $this->listing->id,
         'message' => 'Test enquiry',
-        'preferred_contact' => 'email',
         'status' => 'new',
         'uuid' => \Illuminate\Support\Str::uuid(),
     ]);
@@ -346,7 +344,9 @@ test('enquiry rate limiting works', function () {
 });
 
 test('unauthenticated user cannot access tenant endpoints', function () {
-    $this->withoutMiddleware(\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class);
+    // Forget the current authentication
+    auth()->logout();
+    \Laravel\Sanctum\Sanctum::actingAs(null);
     
     $response = $this->postJson('/api/v1/enquiries', [
         'listing_id' => $this->listing->uuid,

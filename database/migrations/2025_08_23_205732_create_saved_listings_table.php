@@ -12,9 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('saved_listings', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid')->unique();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('listing_id')->constrained()->cascadeOnDelete();
-            $table->primary(['user_id', 'listing_id']);
+            $table->timestamps();
+            $table->unique(['user_id', 'listing_id']);
         });
     }
 

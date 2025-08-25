@@ -14,8 +14,13 @@ uses(CreatesUsers::class);
 beforeEach(function () {
     $this->geography = GeographyFactory::createFullGeography();
     $this->landlord = $this->actingAsLandlord();
+    
+    // Refresh the landlord relationship to ensure it's loaded
+    $this->landlord->refresh();
+    $this->landlord->load('landlord');
+    
     $this->listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -32,7 +37,7 @@ beforeEach(function () {
 });
 
 test('landlord can view available boost plans', function () {
-    $response = $this->getJson('/api/v1/me/boosts');
+    $response = $this->getJson('/api/v1/me/boosts/plans');
     
     $response->assertOk()
         ->assertJsonStructure([
@@ -100,8 +105,10 @@ test('landlord can purchase boost for their listing', function () {
 
 test('boost purchase fails for non-owned listing', function () {
     $otherLandlord = $this->makeLandlord();
+    $otherLandlord->load('landlord');
+    
     $otherListing = Listing::factory()->create([
-        'landlord_id' => $otherLandlord->landlord->id,
+        'landlord_id' => $otherLandlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -158,7 +165,9 @@ test('payment webhook processes successful payment', function () {
         'provider_fee' => 25,
     ];
     
-    $response = $this->postJson('/api/v1/webhooks/payments/stripe', $webhookPayload);
+    $response = $this->postJson('/api/v1/webhooks/payments/stripe', $webhookPayload, [
+        'X-Webhook-Secret' => config('payments.providers.stripe.secret')
+    ]);
     
     $response->assertOk();
     
@@ -214,7 +223,9 @@ test('payment webhook handles duplicate processing', function () {
         'status' => 'paid',
     ];
     
-    $response = $this->postJson('/api/v1/webhooks/payments/stripe', $webhookPayload);
+    $response = $this->postJson('/api/v1/webhooks/payments/stripe', $webhookPayload, [
+        'X-Webhook-Secret' => config('payments.providers.stripe.secret')
+    ]);
     
     $response->assertOk();
     
@@ -274,7 +285,9 @@ test('boost activation sets correct start and end dates', function () {
         'status' => 'paid',
     ];
     
-    $this->postJson('/api/v1/webhooks/payments/stripe', $webhookPayload);
+    $this->postJson('/api/v1/webhooks/payments/stripe', $webhookPayload, [
+        'X-Webhook-Secret' => config('payments.providers.stripe.secret')
+    ]);
     
     $boost = Boost::where('listing_id', $this->listing->id)->first();
     
@@ -323,7 +336,9 @@ test('payment confirmation activity is logged', function () {
         'status' => 'paid',
     ];
     
-    $this->postJson('/api/v1/webhooks/payments/stripe', $webhookPayload);
+    $this->postJson('/api/v1/webhooks/payments/stripe', $webhookPayload, [
+        'X-Webhook-Secret' => config('payments.providers.stripe.secret')
+    ]);
     
     $this->assertDatabaseHas('activity_log', [
         'subject_type' => Order::class,

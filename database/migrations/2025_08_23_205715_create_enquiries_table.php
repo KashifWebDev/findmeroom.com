@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('listing_id')->constrained()->cascadeOnDelete();
             $table->foreignId('tenant_id')->nullable()->constrained('tenants', 'user_id')->nullOnDelete();
             $table->text('message');
+            $table->enum('preferred_contact', ['email', 'phone', 'whatsapp'])->default('email');
             $table->string('contact_phone', 20)->nullable();
             $table->string('contact_email', 190)->nullable();
             $table->enum('status', ['new', 'responded', 'closed', 'spam'])->default('new');

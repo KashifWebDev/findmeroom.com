@@ -16,13 +16,15 @@ class SavedSearchController extends Controller
     {
         $data = $request->validated();
         
+        $filters = $data['filters'] ?? [];
+        
         $savedSearch = SavedSearch::create([
-            'tenant_id' => auth()->id(),
+            'user_id' => auth()->id(),
             'name' => $data['name'],
-            'city_id' => $data['city_id'] ?? null,
-            'area_id' => $data['area_id'] ?? null,
-            'campus_id' => $data['campus_id'] ?? null,
-            'filters' => $data['filters'] ?? [],
+            'city_id' => $data['city_id'] ?? $filters['city_id'] ?? null,
+            'area_id' => $data['area_id'] ?? $filters['area_id'] ?? null,
+            'campus_id' => $data['campus_id'] ?? $filters['campus_id'] ?? null,
+            'filters' => $filters,
             'notify_channel' => 'email',
         ]);
         
@@ -31,7 +33,7 @@ class SavedSearchController extends Controller
 
     public function index()
     {
-        $savedSearches = SavedSearch::where('tenant_id', auth()->id())
+        $savedSearches = SavedSearch::where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->paginate(20);
         
@@ -40,12 +42,12 @@ class SavedSearchController extends Controller
 
     public function destroy(int $id)
     {
-        $savedSearch = SavedSearch::where('tenant_id', auth()->id())
+        $savedSearch = SavedSearch::where('user_id', auth()->id())
             ->where('id', $id)
             ->firstOrFail();
         
         $savedSearch->delete();
         
-        return $this->ok(['message' => 'Saved search deleted successfully']);
+        return response()->noContent();
     }
 }

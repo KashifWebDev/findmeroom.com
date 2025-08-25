@@ -17,20 +17,37 @@ class ListingPublicController extends Controller
     {
         $query = app(ListingQueryService::class)->publicIndex($request);
         
-        $listings = $query->paginate(20);
+        $listings = $query->with(['area.city', 'landlord.user'])->paginate(20);
         
         $items = $listings->getCollection()->map(function ($listing) {
             return [
+                'id' => $listing->id,
                 'uuid' => $listing->uuid,
                 'title' => $listing->title,
-                'rent_monthly' => $listing->rent_monthly,
-                'city' => $listing->area->city->name ?? null,
-                'area' => $listing->area->name ?? null,
-                'furnished' => $listing->furnished,
+                'slug' => $listing->slug,
+                'description' => $listing->description,
+                'rent_monthly' => number_format($listing->rent_monthly, 2, '.', ''),
+                'deposit' => $listing->deposit,
+                'bills_included' => $listing->bills_included,
+                'room_type' => $listing->room_type,
                 'gender_pref' => $listing->gender_pref,
+                'furnished' => $listing->furnished,
+                'status' => $listing->status,
                 'verified_level' => $listing->verified_level,
-                'cover_url' => $listing->getFirstMediaUrl('listing_cover'),
                 'published_at' => $listing->published_at?->toISOString(),
+                'area' => [
+                    'id' => $listing->area->id,
+                    'name' => $listing->area->name,
+                    'city' => [
+                        'id' => $listing->area->city->id,
+                        'name' => $listing->area->city->name,
+                    ],
+                ],
+                'landlord' => [
+                    'id' => $listing->landlord->user_id,
+                    'name' => $listing->landlord->user->name,
+                    'rating_avg' => $listing->landlord->rating_avg,
+                ],
             ];
         });
         
@@ -51,8 +68,10 @@ class ListingPublicController extends Controller
         $listing->load(['area.city', 'landlord.user', 'amenities', 'listingRules']);
         
         $data = [
+            'id' => $listing->id,
             'uuid' => $listing->uuid,
             'title' => $listing->title,
+            'slug' => $listing->slug,
             'description' => $listing->description,
             'rent_monthly' => $listing->rent_monthly,
             'deposit' => $listing->deposit,
@@ -80,6 +99,7 @@ class ListingPublicController extends Controller
                 ],
             ],
             'landlord' => [
+                'id' => $listing->landlord->user_id,
                 'name' => $listing->landlord->user->name,
                 'company_name' => $listing->landlord->company_name,
                 'rating_avg' => $listing->landlord->rating_avg,

@@ -13,14 +13,17 @@ beforeEach(function () {
     $this->geography = GeographyFactory::createFullGeography();
     $this->landlord = $this->makeLandlord();
     $this->amenity = Amenity::create([
-        'name' => 'WiFi',
+        'key' => 'wifi',
+        'label' => 'WiFi',
+        'category' => 'internet',
+        'sort_order' => 1,
         'uuid' => \Illuminate\Support\Str::uuid(),
     ]);
 });
 
 test('public listings index returns correct response structure', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -77,7 +80,7 @@ test('public listings index returns correct response structure', function () {
 test('public listings index only shows published listings', function () {
     // Create published listing
     $publishedListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -85,7 +88,7 @@ test('public listings index only shows published listings', function () {
     
     // Create draft listing
     $draftListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'draft',
         'published_at' => null,
@@ -102,7 +105,7 @@ test('public listings index only shows published listings', function () {
 
 test('public listings index supports filtering by area', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -115,7 +118,7 @@ test('public listings index supports filtering by area', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $otherArea->id,
         'status' => 'published',
         'published_at' => now(),
@@ -132,7 +135,7 @@ test('public listings index supports filtering by area', function () {
 
 test('public listings index supports filtering by room type', function () {
     $privateListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -140,7 +143,7 @@ test('public listings index supports filtering by room type', function () {
     ]);
     
     $sharedListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -158,7 +161,7 @@ test('public listings index supports filtering by room type', function () {
 
 test('public listings index supports price filtering', function () {
     $cheapListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -166,7 +169,7 @@ test('public listings index supports price filtering', function () {
     ]);
     
     $expensiveListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -184,7 +187,7 @@ test('public listings index supports price filtering', function () {
 
 test('public listings index supports text search', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -192,7 +195,7 @@ test('public listings index supports text search', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -210,7 +213,7 @@ test('public listings index supports text search', function () {
 
 test('public listings index supports sorting', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now()->subDays(2),
@@ -218,7 +221,7 @@ test('public listings index supports sorting', function () {
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now()->subDays(1),
@@ -237,7 +240,7 @@ test('public listings index supports sorting', function () {
 
 test('public listings show returns correct response structure', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),
@@ -299,7 +302,7 @@ test('public listings show returns 404 for non-existent listing', function () {
 
 test('public listings show returns 404 for draft listing', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'draft',
         'published_at' => null,
@@ -317,7 +320,7 @@ test('public listings index pagination works correctly', function () {
     // Create 25 listings (more than default per_page of 20)
     for ($i = 0; $i < 25; $i++) {
         Listing::factory()->create([
-            'landlord_id' => $this->landlord->landlord->id,
+            'landlord_id' => $this->landlord->id,
             'area_id' => $this->geography['area']->id,
             'status' => 'published',
             'published_at' => now(),

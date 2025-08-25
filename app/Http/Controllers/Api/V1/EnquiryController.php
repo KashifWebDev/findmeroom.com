@@ -17,12 +17,13 @@ class EnquiryController extends Controller
     {
         $data = $request->validated();
         
-        $listing = Listing::where('uuid', $data['listing_uuid'])->firstOrFail();
+        $listing = Listing::where('uuid', $data['listing_id'])->firstOrFail();
         
         $enquiry = Enquiry::create([
             'listing_id' => $listing->id,
             'tenant_id' => auth()->id(),
             'message' => $data['message'],
+            'preferred_contact' => $data['preferred_contact'] ?? 'email',
             'status' => 'new',
         ]);
         
@@ -46,16 +47,16 @@ class EnquiryController extends Controller
         $items = $enquiries->getCollection()->map(function ($enquiry) {
             return [
                 'id' => $enquiry->id,
+                'uuid' => $enquiry->uuid,
                 'message' => $enquiry->message,
+                'preferred_contact' => $enquiry->preferred_contact,
                 'status' => $enquiry->status,
                 'created_at' => $enquiry->created_at->toISOString(),
+                'updated_at' => $enquiry->updated_at->toISOString(),
                 'listing' => [
+                    'id' => $enquiry->listing->id,
                     'uuid' => $enquiry->listing->uuid,
                     'title' => $enquiry->listing->title,
-                    'rent_monthly' => $enquiry->listing->rent_monthly,
-                    'city' => $enquiry->listing->area->city->name ?? null,
-                    'area' => $enquiry->listing->area->name ?? null,
-                    'cover_url' => $enquiry->listing->getFirstMediaUrl('listing_cover'),
                 ],
             ];
         });

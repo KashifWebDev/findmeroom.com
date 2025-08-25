@@ -14,13 +14,13 @@ beforeEach(function () {
 
 test('min_price scope filters listings above minimum price', function () {
     $cheapListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 5000,
     ]);
     
     $expensiveListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 15000,
     ]);
@@ -33,7 +33,7 @@ test('min_price scope filters listings above minimum price', function () {
 
 test('min_price scope includes listings at minimum price', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 10000,
     ]);
@@ -46,13 +46,13 @@ test('min_price scope includes listings at minimum price', function () {
 
 test('min_price scope with zero includes all listings', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 1000,
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 50000,
     ]);
@@ -64,13 +64,13 @@ test('min_price scope with zero includes all listings', function () {
 
 test('max_price scope filters listings below maximum price', function () {
     $cheapListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 5000,
     ]);
     
     $expensiveListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 15000,
     ]);
@@ -83,7 +83,7 @@ test('max_price scope filters listings below maximum price', function () {
 
 test('max_price scope includes listings at maximum price', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 10000,
     ]);
@@ -96,13 +96,13 @@ test('max_price scope includes listings at maximum price', function () {
 
 test('max_price scope with high value includes all listings', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 1000,
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 50000,
     ]);
@@ -114,19 +114,19 @@ test('max_price scope with high value includes all listings', function () {
 
 test('min_price and max_price scopes can be combined', function () {
     $cheapListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 5000,
     ]);
     
     $midListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 10000,
     ]);
     
     $expensiveListing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 15000,
     ]);
@@ -139,7 +139,7 @@ test('min_price and max_price scopes can be combined', function () {
 
 test('price scopes work with decimal values', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 9999.99,
     ]);
@@ -152,13 +152,13 @@ test('price scopes work with decimal values', function () {
 
 test('price scopes handle edge cases correctly', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 0.01,
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 999999.99,
     ]);
@@ -178,14 +178,14 @@ test('price scopes handle edge cases correctly', function () {
 
 test('price scopes work with other scopes', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 10000,
         'room_type' => 'private_room',
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 20000,
         'room_type' => 'shared_room',
@@ -212,7 +212,7 @@ test('price scopes return query builder for chaining', function () {
 
 test('price scopes handle null values gracefully', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 10000,
     ]);
@@ -227,13 +227,13 @@ test('price scopes handle null values gracefully', function () {
 
 test('price scopes work with order by clauses', function () {
     $listing1 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 5000,
     ]);
     
     $listing2 = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'rent_monthly' => 10000,
     ]);

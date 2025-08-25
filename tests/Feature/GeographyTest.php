@@ -97,16 +97,16 @@ test('geography data is properly seeded', function () {
     
     $this->assertDatabaseHas('cities', [
         'id' => $geography['city']->id,
-        'name' => 'Lahore',
+        'name' => $geography['city']->name,
     ]);
     
     $this->assertDatabaseHas('areas', [
         'id' => $geography['area']->id,
-        'name' => 'Gulberg',
+        'name' => $geography['area']->name,
     ]);
     
     $this->assertDatabaseHas('campuses', [
         'id' => $geography['campus']->id,
-        'name' => 'LUMS',
+        'name' => $geography['campus']->name,
     ]);
 });

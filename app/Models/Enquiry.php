@@ -26,6 +26,7 @@ class Enquiry extends Model
         'listing_id',
         'tenant_id',
         'message',
+        'preferred_contact',
         'contact_phone',
         'contact_email',
         'status',

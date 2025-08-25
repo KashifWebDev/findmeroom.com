@@ -17,7 +17,8 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
         
-
+        // Prevent seeders from running during tests
+        config(['app.env' => 'testing']);
         
         // Create Spatie roles for testing
         Role::firstOrCreate(['name' => 'admin']);

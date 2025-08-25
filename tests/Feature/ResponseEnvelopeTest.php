@@ -4,11 +4,48 @@ use App\Models\Listing;
 use App\Models\Landlord;
 use Tests\Support\CreatesUsers;
 use Tests\Support\GeographyFactory;
+use App\Models\Country;
+use App\Models\Region;
+use App\Models\City;
+use App\Models\Area;
+use Illuminate\Support\Str;
 
 uses(CreatesUsers::class);
 
 beforeEach(function () {
-    $this->geography = GeographyFactory::createFullGeography();
+    // Create geography data manually to avoid conflicts with seeders
+    $country = Country::create([
+        'code' => 'T' . rand(0, 9), // Use exactly 2 characters: T0-T9
+        'name' => 'Test Country ' . Str::random(4),
+        'uuid' => Str::uuid(),
+    ]);
+    
+    $region = Region::create([
+        'name' => 'Test Region ' . Str::random(4),
+        'country_id' => $country->id,
+        'uuid' => Str::uuid(),
+    ]);
+    
+    $city = City::create([
+        'name' => 'Test City ' . Str::random(4),
+        'region_id' => $region->id,
+        'uuid' => Str::uuid(),
+        'slug' => 'test-city-' . Str::random(4),
+    ]);
+    
+    $area = Area::create([
+        'name' => 'Test Area ' . Str::random(4),
+        'city_id' => $city->id,
+        'uuid' => Str::uuid(),
+        'slug' => 'test-area-' . Str::random(4),
+    ]);
+    
+    $this->geography = [
+        'country' => $country,
+        'region' => $region,
+        'city' => $city,
+        'area' => $area,
+    ];
     
     $this->landlord = $this->makeLandlord();
 });
@@ -292,7 +329,7 @@ test('pagination meta includes correct values', function () {
     // Create 15 listings
     for ($i = 0; $i < 15; $i++) {
         Listing::factory()->create([
-            'landlord_id' => $this->landlord->landlord->id,
+            'landlord_id' => $this->landlord->id,
             'area_id' => $this->geography['area']->id,
             'status' => 'published',
             'published_at' => now(),

@@ -11,13 +11,10 @@ use Illuminate\Support\Str;
 
 class GeographyFactory
 {
-    public static function createCountry(string $name = 'Pakistan', string $code = 'PK'): Country
+    public static function createCountry(string $name = 'Pakistan'): Country
     {
-        // Use completely random single character codes to avoid duplicates
-        $randomCode = chr(65 + rand(0, 25)); // A-Z
-        
-        // Debug: Log what code is being generated
-        \Log::info("GeographyFactory: Creating country with code: {$randomCode}");
+        // Generate 2-character codes to fit the database constraint
+        $randomCode = chr(65 + rand(0, 25)) . chr(65 + rand(0, 25)); // AA-ZZ
         
         return Country::create([
             'name' => $name . '_' . Str::random(4),
@@ -83,6 +80,26 @@ class GeographyFactory
     
     public static function createFullGeography(): array
     {
+        // Check if geography data already exists
+        $existingCountry = Country::first();
+        if ($existingCountry) {
+            $existingRegion = Region::where('country_id', $existingCountry->id)->first();
+            $existingCity = City::where('region_id', $existingRegion->id)->first();
+            $existingArea = Area::where('city_id', $existingCity->id)->first();
+            $existingCampus = Campus::where('city_id', $existingCity->id)->first();
+            
+            if ($existingRegion && $existingCity && $existingArea) {
+                return [
+                    'country' => $existingCountry,
+                    'region' => $existingRegion,
+                    'city' => $existingCity,
+                    'area' => $existingArea,
+                    'campus' => $existingCampus,
+                ];
+            }
+        }
+        
+        // Create new geography data if none exists
         $country = self::createCountry();
         $region = self::createRegion(country: $country);
         $city = self::createCity(region: $region);

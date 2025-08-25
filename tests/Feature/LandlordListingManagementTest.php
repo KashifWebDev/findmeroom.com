@@ -316,7 +316,7 @@ test('landlord can view enquiries for their listings', function () {
         'uuid' => \Illuminate\Support\Str::uuid(),
     ]);
     
-    $response = $this->getJson('/api/v1/me/enquiries');
+    $response = $this->getJson('/api/v1/me/enquiries/received');
     
     $response->assertOk()
         ->assertJsonStructure([

@@ -344,13 +344,57 @@ test('enquiry rate limiting works', function () {
 });
 
 test('unauthenticated user cannot access tenant endpoints', function () {
-    // Use a simpler approach - just make the request without auth
-    $this->withHeaders(['Accept' => 'application/json']);
+    // Don't use any authentication for this test - override beforeEach behavior
+    auth()->forgetGuards();
     
-    $response = $this->json('POST', '/api/v1/enquiries', [
+    // Test POST enquiry endpoint without authentication
+    $response = $this->postJson('/api/v1/enquiries', [
         'listing_id' => $this->listing->uuid,
         'message' => 'Test message',
     ]);
     
-    $response->assertStatus(401);
-})->skip('Skipping until we can properly test unauthenticated requests');
+    $response->assertStatus(401)
+        ->assertJson([
+            'ok' => false,
+            'error' => [
+                'code' => 'UNAUTHENTICATED',
+                'message' => 'Unauthenticated.',
+            ],
+        ]);
+    
+    // Test GET tenant enquiries endpoint without authentication
+    $response = $this->getJson('/api/v1/me/enquiries');
+    
+    $response->assertStatus(401)
+        ->assertJson([
+            'ok' => false,
+            'error' => [
+                'code' => 'UNAUTHENTICATED',
+                'message' => 'Unauthenticated.',
+            ],
+        ]);
+    
+    // Test saved listings endpoint without authentication
+    $response = $this->getJson('/api/v1/me/saved-listings');
+    
+    $response->assertStatus(401)
+        ->assertJson([
+            'ok' => false,
+            'error' => [
+                'code' => 'UNAUTHENTICATED',
+                'message' => 'Unauthenticated.',
+            ],
+        ]);
+    
+    // Test saved searches endpoint without authentication
+    $response = $this->getJson('/api/v1/me/saved-searches');
+    
+    $response->assertStatus(401)
+        ->assertJson([
+            'ok' => false,
+            'error' => [
+                'code' => 'UNAUTHENTICATED',
+                'message' => 'Unauthenticated.',
+            ],
+        ]);
+});

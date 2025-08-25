@@ -221,8 +221,35 @@ test('verification activity is logged', function () {
 });
 
 test('unauthenticated user cannot access verification endpoints', function () {
-    // Skip this test for now as it's hard to test unauthenticated requests in the current setup
-})->skip('Skipping until we can properly test unauthenticated requests');
+    // Don't use any authentication for this test - override beforeEach behavior
+    auth()->forgetGuards();
+    
+    // Test POST to verification docs endpoint without authentication
+    $response = $this->postJson('/api/v1/me/verification/docs', [
+        'id_proof' => \Illuminate\Http\UploadedFile::fake()->image('id_card.jpg', 800, 600),
+    ]);
+    
+    $response->assertStatus(401)
+        ->assertJson([
+            'ok' => false,
+            'error' => [
+                'code' => 'UNAUTHENTICATED',
+                'message' => 'Unauthenticated.',
+            ],
+        ]);
+    
+    // Test GET to verification status endpoint without authentication
+    $response = $this->getJson('/api/v1/me/verification');
+    
+    $response->assertStatus(401)
+        ->assertJson([
+            'ok' => false,
+            'error' => [
+                'code' => 'UNAUTHENTICATED',
+                'message' => 'Unauthenticated.',
+            ],
+        ]);
+});
 
 test('verification document validation requires at least one document', function () {
     $response = $this->postJson('/api/v1/me/verification/docs', []);

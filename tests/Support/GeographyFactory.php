@@ -13,9 +13,15 @@ class GeographyFactory
 {
     public static function createCountry(string $name = 'Pakistan', string $code = 'PK'): Country
     {
+        // Use completely random single character codes to avoid duplicates
+        $randomCode = chr(65 + rand(0, 25)); // A-Z
+        
+        // Debug: Log what code is being generated
+        \Log::info("GeographyFactory: Creating country with code: {$randomCode}");
+        
         return Country::create([
-            'name' => $name,
-            'code' => $code,
+            'name' => $name . '_' . Str::random(4),
+            'code' => $randomCode,
             'uuid' => Str::uuid(),
         ]);
     }
@@ -27,7 +33,7 @@ class GeographyFactory
         }
         
         return Region::create([
-            'name' => $name,
+            'name' => $name . '_' . Str::random(4),
             'country_id' => $country->id,
             'uuid' => Str::uuid(),
         ]);
@@ -40,10 +46,10 @@ class GeographyFactory
         }
         
         return City::create([
-            'name' => $name,
+            'name' => $name . '_' . Str::random(4),
             'region_id' => $region->id,
             'uuid' => Str::uuid(),
-            'slug' => Str::slug($name),
+            'slug' => Str::slug($name . '_' . Str::random(4)),
         ]);
     }
     
@@ -54,10 +60,10 @@ class GeographyFactory
         }
         
         return Area::create([
-            'name' => $name,
+            'name' => $name . '_' . Str::random(4),
             'city_id' => $city->id,
             'uuid' => Str::uuid(),
-            'slug' => Str::slug($name),
+            'slug' => Str::slug($name . '_' . Str::random(4)),
         ]);
     }
     
@@ -68,10 +74,10 @@ class GeographyFactory
         }
         
         return Campus::create([
-            'name' => $name,
+            'name' => $name . '_' . Str::random(4),
             'city_id' => $area->city_id,
             'uuid' => Str::uuid(),
-            'slug' => Str::slug($name),
+            'slug' => Str::slug($name . '_' . Str::random(4)),
         ]);
     }
     

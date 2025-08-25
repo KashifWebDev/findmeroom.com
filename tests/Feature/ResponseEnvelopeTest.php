@@ -9,6 +9,7 @@ uses(CreatesUsers::class);
 
 beforeEach(function () {
     $this->geography = GeographyFactory::createFullGeography();
+    
     $this->landlord = $this->makeLandlord();
 });
 
@@ -98,7 +99,7 @@ test('created responses use 201 status code', function () {
 
 test('deleted responses use 204 status code', function () {
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
     ]);
     
@@ -113,7 +114,7 @@ test('pagination includes correct meta structure', function () {
     // Create 25 listings (more than default per_page of 20)
     for ($i = 0; $i < 25; $i++) {
         Listing::factory()->create([
-            'landlord_id' => $this->landlord->landlord->id,
+            'landlord_id' => $this->landlord->id,
             'area_id' => $this->geography['area']->id,
             'status' => 'published',
             'published_at' => now(),
@@ -188,7 +189,7 @@ test('rate limiting errors use 429 status', function () {
     // Create 6 enquiries (rate limit is 5 per minute)
     $tenant = $this->actingAsTenant();
     $listing = Listing::factory()->create([
-        'landlord_id' => $this->landlord->landlord->id,
+        'landlord_id' => $this->landlord->id,
         'area_id' => $this->geography['area']->id,
         'status' => 'published',
         'published_at' => now(),

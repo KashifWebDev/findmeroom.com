@@ -30,7 +30,7 @@ trait ApiResponse
         ], 204);
     }
 
-    protected function fail(string $code, string $message, array $fields = null, int $http = 400): JsonResponse
+    protected function fail(string $code, string $message, ?array $fields = null, int $http = 400): JsonResponse
     {
         return response()->json([
             'ok' => false,

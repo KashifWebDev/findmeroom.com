@@ -5,21 +5,6 @@ use Tests\TestCase;
 uses(TestCase::class)->in('Feature');
 uses(TestCase::class)->in('Unit');
 
-beforeEach(function () {
-    // Create Spatie roles for testing
-    $this->artisan('permission:create-permission', ['name' => 'admin']);
-    $this->artisan('permission:create-permission', ['name' => 'landlord']);
-    $this->artisan('permission:create-permission', ['name' => 'tenant']);
-    
-    $this->artisan('permission:create-role', ['name' => 'admin']);
-    $this->artisan('permission:create-role', ['name' => 'landlord']);
-    $this->artisan('permission:create-role', ['name' => 'tenant']);
-    
-    $this->artisan('permission:give-permission-to-role', ['role' => 'admin', 'permission' => 'admin']);
-    $this->artisan('permission:give-permission-to-role', ['role' => 'landlord', 'permission' => 'landlord']);
-    $this->artisan('permission:give-permission-to-role', ['role' => 'tenant', 'permission' => 'tenant']);
-});
-
 /*
 |--------------------------------------------------------------------------
 | Expectations
@@ -27,7 +12,7 @@ beforeEach(function () {
 |
 | When you're writing tests, you often need to check that values meet certain conditions. The
 | "expect()" function gives you access to a set of "expectations" methods that you can use
-| to assert different things. Of course, you may extend the Expectation API at any time.
+| to assert different things. Of course, you may also extend the Expectation API at any time.
 |
 */
 

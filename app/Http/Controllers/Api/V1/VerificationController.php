@@ -14,36 +14,28 @@ class VerificationController extends Controller
 
     public function storeDocs(VerificationDocsRequest $request)
     {
-        $data = $request->validated();
+        // Check if user already has a verification
+        $existingVerification = Verification::where('user_id', auth()->id())->first();
+        if ($existingVerification) {
+            return $this->fail('VERIFICATION_EXISTS', 'Verification documents already submitted', [], 422);
+        }
         
-        // Get or create verification record
-        $verification = Verification::firstOrCreate(
-            ['user_id' => auth()->id()],
-            [
-                'user_id' => auth()->id(),
-                'status' => 'pending',
-                'submitted_at' => null,
-            ]
-        );
-        
-        // Clear existing documents
-        $verification->clearMediaCollection('verification_docs');
-        
-        // Upload new documents
-        $verification->addMediaFromRequest('cnic')
-            ->toMediaCollection('verification_docs', 'public');
-        
-        $verification->addMediaFromRequest('selfie')
-            ->toMediaCollection('verification_docs', 'public');
-        
-        $verification->addMediaFromRequest('proof')
-            ->toMediaCollection('verification_docs', 'public');
-        
-        // Update status
-        $verification->update([
-            'status' => 'submitted',
+        // Create verification record
+        $verification = Verification::create([
+            'user_id' => auth()->id(),
+            'status' => 'pending',
             'submitted_at' => now(),
         ]);
+        
+        // Upload documents if provided
+        $documentTypes = ['id_proof', 'address_proof', 'income_proof'];
+        
+        foreach ($documentTypes as $documentType) {
+            if ($request->hasFile($documentType)) {
+                $verification->addMediaFromRequest($documentType)
+                    ->toMediaCollection('verification_docs', 'public');
+            }
+        }
         
         // Log activity
         activity()
@@ -52,7 +44,7 @@ class VerificationController extends Controller
             ->event('verification.submitted')
             ->log('Verification documents submitted');
         
-        return $this->ok(['message' => 'Verification documents uploaded successfully']);
+        return $this->created($verification);
     }
 
     public function show()
@@ -76,8 +68,14 @@ class VerificationController extends Controller
         });
         
         return $this->ok([
+            'id' => $verification->id,
+            'uuid' => $verification->uuid,
             'status' => $verification->status,
             'submitted_at' => $verification->submitted_at?->toISOString(),
+            'decided_at' => $verification->decided_at?->toISOString(),
+            'decision_reason' => $verification->decision_reason,
+            'created_at' => $verification->created_at->toISOString(),
+            'updated_at' => $verification->updated_at->toISOString(),
             'documents' => $documents,
         ]);
     }

@@ -22,7 +22,7 @@ class SavedSearchController extends Controller
             'user_id' => auth()->id(),
             'name' => $data['name'],
             'city_id' => $data['city_id'] ?? $filters['city_id'] ?? null,
-            'area_id' => $data['area_id'] ?? $filters['area_id'] ?? null,
+            'area_id' => $data['area_id'] ?? $filters['area_id'] ?? null,  
             'campus_id' => $data['campus_id'] ?? $filters['campus_id'] ?? null,
             'filters' => $filters,
             'notify_channel' => 'email',

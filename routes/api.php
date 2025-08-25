@@ -57,7 +57,7 @@ Route::prefix('v1')->name('api.v1.')->middleware(['throttle:api'])->group(functi
         Route::delete('/me/listings/{listing:uuid}/gallery/{mediaId}', [ListingMediaController::class, 'deleteGallery'])->middleware('owns.listing');
         
         // Enquiries received
-        Route::get('/me/enquiries', [LandlordEnquiryController::class, 'index']);
+        Route::get('/me/enquiries/received', [LandlordEnquiryController::class, 'index']);
         
         // Boosts
         Route::get('/me/boosts/plans', [BoostController::class, 'plans']);

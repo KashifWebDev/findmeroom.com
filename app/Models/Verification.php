@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
@@ -14,25 +15,35 @@ class Verification extends Model implements HasMedia
 {
     use LogsActivity, InteractsWithMedia;
 
-    protected $primaryKey = 'user_id';
-    public $incrementing = false;
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($model) {
+            if (empty($model->uuid)) {
+                $model->uuid = Str::uuid();
+            }
+        });
+    }
 
     protected $fillable = [
         'user_id',
         'status',
         'reviewer_user_id',
-        'reviewed_at',
-        'notes',
+        'submitted_at',
+        'decided_at',
+        'decision_reason',
     ];
 
     protected $casts = [
-        'reviewed_at' => 'datetime',
+        'submitted_at' => 'datetime',
+        'decided_at' => 'datetime',
     ];
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['status', 'reviewer_user_id', 'reviewed_at', 'notes'])
+            ->logOnly(['status', 'reviewer_user_id', 'decided_at', 'decision_reason'])
             ->logOnlyDirty();
     }
 

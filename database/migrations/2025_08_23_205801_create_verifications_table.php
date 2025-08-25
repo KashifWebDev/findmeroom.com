@@ -12,12 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('verifications', function (Blueprint $table) {
-            $table->foreignId('user_id')->primary()->constrained()->cascadeOnDelete();
-            $table->enum('status', ['none', 'submitted', 'verified', 'rejected'])->default('none');
+            $table->id();
+            $table->uuid('uuid')->unique();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->foreignId('reviewer_user_id')->nullable()->constrained('users')->restrictOnDelete();
-            $table->timestamp('reviewed_at')->nullable();
-            $table->text('notes')->nullable();
+            $table->timestamp('submitted_at')->nullable();
+            $table->timestamp('decided_at')->nullable();
+            $table->text('decision_reason')->nullable();
             $table->timestamps();
+            
+            $table->unique('user_id');
         });
     }
 

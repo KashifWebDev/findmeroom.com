@@ -17,7 +17,11 @@ class EnquiryController extends Controller
     {
         $data = $request->validated();
         
-        $listing = Listing::where('uuid', $data['listing_id'])->firstOrFail();
+        $listing = Listing::where('uuid', $data['listing_id'])->first();
+        
+        if (!$listing) {
+            return $this->fail('LISTING_NOT_FOUND', 'Listing not found', [], 404);
+        }
         
         $enquiry = Enquiry::create([
             'listing_id' => $listing->id,

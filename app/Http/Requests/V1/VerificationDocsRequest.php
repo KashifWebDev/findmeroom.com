@@ -27,10 +27,29 @@ class VerificationDocsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cnic' => 'required|file|mimes:jpeg,png,webp,pdf|max:5120',
-            'selfie' => 'required|image|mimes:jpeg,png,webp|max:5120',
-            'proof' => 'required|file|mimes:jpeg,png,webp,pdf|max:5120',
+            'id_proof' => 'nullable|image|mimes:jpeg,png,webp|max:5120',
+            'address_proof' => 'nullable|image|mimes:jpeg,png,webp|max:5120', 
+            'income_proof' => 'nullable|image|mimes:jpeg,png,webp|max:5120',
         ];
+    }
+    
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $files = ['id_proof', 'address_proof', 'income_proof'];
+            $hasAnyFile = false;
+            
+            foreach ($files as $file) {
+                if ($this->hasFile($file)) {
+                    $hasAnyFile = true;
+                    break;
+                }
+            }
+            
+            if (!$hasAnyFile) {
+                $validator->errors()->add('documents', 'At least one verification document is required.');
+            }
+        });
     }
 
     /**

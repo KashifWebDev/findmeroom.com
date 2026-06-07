@@ -1,0 +1,1 @@
+(function(){$(()=>{$("input.setting-selection-option").each(function(e,n){const t=$($(n).data("target"));$(n).on("change",function(){$(n).val()==="1"?(t.removeClass("d-none"),Botble.initResources()):t.addClass("d-none")})})})})();

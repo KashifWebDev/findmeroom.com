@@ -1,0 +1,28 @@
+export default {
+    vue: true,
+    js: [
+        'components',
+        'real-estate',
+        'currencies',
+        'global-custom-fields',
+        'custom-fields',
+        'account-admin',
+        'coupon',
+        'app',
+        'bulk-import',
+        'duplicate-property',
+        'setting',
+        'front-review',
+        'custom-field',
+        'reports',
+    ],
+    sass: [
+        { src: 'resources/sass/dashboard/style.scss', out: 'dashboard/style.css' },
+        { src: 'resources/sass/dashboard/style-rtl.scss', out: 'dashboard/style-rtl.css' },
+        { src: 'resources/sass/real-estate.scss', out: 'real-estate.css' },
+        { src: 'resources/sass/review.scss', out: 'review.css' },
+        { src: 'resources/sass/currencies.scss', out: 'currencies.css' },
+        { src: 'resources/sass/account-admin.scss', out: 'account-admin.css' },
+        { src: 'resources/sass/front-auth.scss', out: 'front-auth.css' },
+    ],
+}

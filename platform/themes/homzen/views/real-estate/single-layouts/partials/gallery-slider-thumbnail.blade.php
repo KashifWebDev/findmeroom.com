@@ -1,0 +1,43 @@
+@php
+    $model = $model ?? $property ?? null;
+@endphp
+
+<div class="single-property-gallery">
+    <div class="position-relative">
+        <div class="swiper sw-single">
+            <div class="swiper-wrapper">
+                @foreach($model->images as $image)
+                    <div class="swiper-slide">
+                        <div class="image-sw-single">
+                            @if ($loop->first)
+                                {{ RvMedia::image($image, $model->name, 'medium-rectangle', attributes: ['fetchpriority' => 'high', 'loading' => 'eager'], lazy: false) }}
+                            @else
+                                {{ RvMedia::image($image, $model->name, 'medium-rectangle', attributes: ['loading' => 'eager'], lazy: false) }}
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        <div class="box-navigation">
+            <div class="navigation swiper-nav-next nav-next-single">
+                <x-core::icon name="ti ti-chevron-left" />
+            </div>
+            <div class="navigation swiper-nav-prev nav-prev-single">
+                <x-core::icon name="ti ti-chevron-right" />
+            </div>
+        </div>
+    </div>
+
+    <div thumbsSlider="" class="swiper thumbs-sw-pagi">
+        <div class="swiper-wrapper">
+            @foreach($model->images as $image)
+                <div class="swiper-slide">
+                    <div class="img-thumb-pagi">
+                        {{ RvMedia::image($image, $model->name, 'medium-square', attributes: ['style' => 'height: 150px', 'loading' => 'eager'], lazy: false) }}
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>

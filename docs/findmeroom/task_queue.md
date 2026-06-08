@@ -1,23 +1,22 @@
 # FindMeRoom — Task Queue
 
-> **Last updated:** 2026-06-08 (Stage 4D verified — ready to commit)  
+> **Last updated:** 2026-06-08 (Stage 4E verified — ready to commit)  
 > Read before every coding task. Reorder only with founder approval.
 
 **Legend:** `[ ]` pending · `[~]` in progress · `[x]` done · `[!]` awaiting founder approval
 
 ---
 
-## Now — Commit Stage 4D, then Stage 4E
+## Now — Commit Stage 4E, then Stage 4F
 
 **Branch:** `stage-4-account-lead-exchange`
 
 | Step | # | Task | Owner | Notes |
 |------|---|------|-------|-------|
-| 4C | [x] | Owner response on public detail | Dev | Committed |
-| 4D | [x] | **Tenant account dashboard pages** | Dev | Verified (10 checks) — **ready to commit** |
-| C4D | [!] | **Commit Stage 4D** | Founder/Dev | Awaiting commit |
-| 4E | [ ] | Guest manage token page (full) | Dev | After Stage 4D commit — do not start yet |
-| 4F | [ ] | Report spam, mark found, admin moderation | Dev | |
+| 4D | [x] | Tenant account dashboard pages | Dev | Committed |
+| 4E | [x] | **Guest manage token page (full)** | Dev | Verified (9 checks) — **ready to commit** |
+| C4E | [!] | **Commit Stage 4E** | Founder/Dev | Awaiting commit |
+| 4F | [ ] | Report spam, mark found, admin moderation | Dev | After Stage 4E commit — do not start yet |
 
 ---
 
@@ -36,13 +35,13 @@
 
 | Item | Blocker |
 |------|---------|
-| Stage 4E | Commit Stage 4D first; await founder build instruction |
+| Stage 4F | Commit Stage 4E first; await founder build instruction |
 
 ---
 
 ## Completed
 
-Stage 1 ✓ · Stage 2 ✓ · Stage 3 committed ✓ · Stage 4A ✓ · Stage 4B committed ✓ · Stage 4C committed ✓ · Stage 4D verified ✓
+Stage 1 ✓ · Stage 2 ✓ · Stage 3 committed ✓ · Stage 4A ✓ · Stage 4B committed ✓ · Stage 4C committed ✓ · Stage 4D committed ✓ · Stage 4E verified ✓
 
 See `current_state.md`.
 

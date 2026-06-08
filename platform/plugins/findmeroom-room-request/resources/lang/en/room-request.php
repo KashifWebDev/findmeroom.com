@@ -146,7 +146,17 @@ return [
     'manage' => [
         'title' => 'Your room request',
         'heading' => 'Your room request',
-        'responses_placeholder' => 'Owner responses will appear here after this feature is enabled.',
+        'private_notice' => 'This is your private page. Do not share this link publicly.',
+        'request_summary' => 'Request summary',
+        'public_link' => 'Public request link',
+        'owner_responses' => 'Owner responses',
+        'pending_notice' => 'Your request is waiting for approval. Owner responses will appear after it becomes public.',
+        'no_responses_title' => 'No room owners have responded yet.',
+        'no_responses_subtitle' => 'Share your public request link to get more responses.',
+        'received_at' => 'Received',
+        'account_cta' => 'Create a free account to manage your requests more easily.',
+        'create_account' => 'Create a free account',
+        'login' => 'Already have an account? Login',
     ],
 
     'account' => [

@@ -5,6 +5,33 @@
 
 ---
 
+## 2026-06-08 — Stage 4E verified (docs only)
+
+**Founder confirmed 9 manual checks:** guest manage link + summary, owner responses + phone on private page, invalid token 404, no responses on public detail, account dashboard + backward compatibility.
+
+**Status:** Stage 4E verified ✓ — **ready to commit**
+
+**Note:** Header/main menu links → Admin → Appearance → Menus (unless a specific in-page CTA is missing from code).
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
+## 2026-06-08 — Stage 4E: full guest manage token page
+
+**Task:** Convert `/my-room-request/{token}` placeholder into full guest manage page with owner responses.
+
+**Files:**
+- `PublicRoomRequestController.php` — load `visibleToTenant` + `visible` responses
+- `front/manage.blade.php` — summary, responses, empty states, account CTA, noindex
+- `resources/lang/en/room-request.php` — manage strings
+
+**Not built:** report, mark found, admin moderation, email, WhatsApp.
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
 ## 2026-06-08 — Stage 4D verified (docs only)
 
 **Founder confirmed 10 manual checks:** account dashboard + sidebar, tenant-scoped list/detail, owner responses in dashboard, owner phone to tenant, tenant phone hidden on public page, backward compatibility.

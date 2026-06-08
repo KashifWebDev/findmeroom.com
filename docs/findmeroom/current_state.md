@@ -1,23 +1,25 @@
 # FindMeRoom — Current State
 
-> **Last updated:** 2026-06-08 (Stage 4D verified — ready to commit)
+> **Last updated:** 2026-06-08 (Stage 4E verified — ready to commit)
 > **Sync docs:** Read this file before every coding task. Update this file after every coding task.
 
 ---
 
 ## Current stage
 
-**Stage 4D verified — ready to commit**
+**Stage 4E verified — ready to commit**
 
 Branch: `stage-4-account-lead-exchange`
 
 **Plan:** `.cursor/plans/stage_4_account_lead_exchange.md`
 
-**Next:** Commit Stage 4D. Stage 4E — guest manage full page (do not start until after commit and founder build instruction).
+**Next:** Commit Stage 4E. Stage 4F — report, mark found, admin moderation (do not start until after commit and founder build instruction).
+
+**Site navigation note:** Header and main menu links (e.g. Post Room Need, Room Requests) are managed from **Admin → Appearance → Menus** unless a specific in-page CTA is missing from code.
 
 ---
 
-## Stage 3 — Committed ✓ · Stage 4B — Committed ✓ · Stage 4C — Committed ✓
+## Stage 3 — Committed ✓ · Stage 4B — Committed ✓ · Stage 4C — Committed ✓ · Stage 4D — Committed ✓
 
 ---
 
@@ -28,38 +30,36 @@ Branch: `stage-4-account-lead-exchange`
 | 4A Planning | ✓ Complete |
 | 4B DB + models + ownership | ✓ Committed |
 | 4C Owner response form | ✓ Committed |
-| 4D Account dashboard pages | ✓ Verified (10 manual checks) — **ready to commit** |
-| 4E Guest manage token page (full) | Not started |
+| 4D Account dashboard pages | ✓ Committed |
+| 4E Guest manage token page (full) | ✓ Verified (9 manual checks) — **ready to commit** |
 | 4F Report / mark found / admin | Not started |
 
 **Goal:** Automated tenant ↔ owner lead exchange using existing Homzen `/account` dashboard.
 
-### Stage 4D — Founder verification (2026-06-08) ✓
+### Stage 4E — Founder verification (2026-06-08) ✓
 
-1. `/account/dashboard` still works
-2. Account sidebar shows **My Room Requests**
-3. `/account/room-requests` opens
-4. Tenant only sees their own room requests
-5. Request detail opens
-6. Owner responses appear inside tenant dashboard
-7. Owner phone visible to tenant
-8. Tenant phone still hidden on public request page
-9. `/account/properties` still works
-10. Existing public room request pages still work
+1. Guest manage link opens
+2. Guest manage page shows request summary
+3. Owner responses appear on guest manage page
+4. Owner phone visible to tenant on private manage page
+5. Invalid token gives 404
+6. Public request page does not show owner responses
+7. Account dashboard room requests still work
+8. `/post-room-need` still works
+9. `/room-requests` still works
 
-### Stage 4D delivered
+### Stage 4E delivered
 
-- Sidebar: **My Room Requests** via `DashboardMenu::for('account')` in plugin (always visible)
-- Routes: `GET /account/room-requests`, `GET /account/room-requests/{id}` with Homzen account middleware stack
-- `AccountRoomRequestController` — index (scoped to `account_id`) + show (404 if not owner)
-- `attachByEmail` fallback on index/show
-- List: public name, location, budget, status, response count, dates, view action; empty state + Post Room Need CTA
-- Detail: request summary, public link if approved, owner responses (`visible` status only)
-- Layout: `plugins/real-estate::themes.dashboard.layouts.master` + `x-core::card` / table / list-group patterns
+- Full guest manage page at `GET /my-room-request/{token}` (`public.room-request.manage`)
+- Request summary: public name, location, budget, room type, tenant type, move-in, status, dates, public link if approved
+- Owner responses: `visible` + `visibleToTenant` scope only; owner contact details for tenant
+- Empty states: pending approval notice; no responses + share public link hint
+- Private page notice + `noindex, nofollow`
+- Optional account CTA (register/login) for guests — not forced
+- Homzen public styling (`flat-section`, cards) matching other room request pages
 
 ### Still deferred
 
-- **4E:** Full guest manage page with responses list
 - **4F:** Report, mark found, admin response moderation UI
 
 ---

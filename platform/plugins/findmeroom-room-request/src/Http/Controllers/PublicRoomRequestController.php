@@ -135,6 +135,12 @@ class PublicRoomRequestController extends BaseController
 
         $roomRequest->load(['city', 'state', 'country']);
 
+        $responses = $roomRequest->responses()
+            ->visibleToTenant()
+            ->where('status', RoomRequestResponseStatusEnum::VISIBLE)
+            ->latest()
+            ->get();
+
         SeoHelper::setTitle(trans('plugins/findmeroom-room-request::room-request.manage.title'));
         SeoHelper::meta()->addMeta('robots', 'noindex, nofollow');
 
@@ -144,7 +150,7 @@ class PublicRoomRequestController extends BaseController
 
         return Theme::scope(
             'findmeroom-room-request.front.manage',
-            compact('roomRequest'),
+            compact('roomRequest', 'responses'),
             'plugins/findmeroom-room-request::front.manage'
         )->render();
     }

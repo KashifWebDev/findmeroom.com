@@ -27,6 +27,15 @@ class RegisterPublicRoomRequestRoutes
             ->where('token', '[A-Za-z0-9]{64}')
             ->name('public.room-request.manage');
 
+        Route::post('my-room-request/{token}/found', [PublicRoomRequestController::class, 'markAsFound'])
+            ->where('token', '[A-Za-z0-9]{64}')
+            ->name('public.room-request.manage.found');
+
+        Route::post('my-room-request/{token}/responses/{response}/report', [PublicRoomRequestController::class, 'reportResponse'])
+            ->where('token', '[A-Za-z0-9]{64}')
+            ->wherePrimaryKey('response')
+            ->name('public.room-request.manage.responses.report');
+
         Route::get('room-requests', [PublicRoomRequestController::class, 'index'])
             ->name('public.room-request.index');
 

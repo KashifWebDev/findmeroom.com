@@ -8,6 +8,7 @@ use Botble\Location\Models\State;
 use Botble\SeoHelper\Facades\SeoHelper;
 use Botble\Theme\Facades\Theme;
 use FindMeRoom\RoomRequest\Enums\RoomRequestResponseStatusEnum;
+use FindMeRoom\RoomRequest\Http\Requests\ReportRoomRequestResponseRequest;
 use FindMeRoom\RoomRequest\Http\Requests\StoreRoomRequestRequest;
 use FindMeRoom\RoomRequest\Http\Requests\StoreRoomRequestResponseRequest;
 use FindMeRoom\RoomRequest\Models\RoomRequest;
@@ -136,8 +137,7 @@ class PublicRoomRequestController extends BaseController
         $roomRequest->load(['city', 'state', 'country']);
 
         $responses = $roomRequest->responses()
-            ->visibleToTenant()
-            ->where('status', RoomRequestResponseStatusEnum::VISIBLE)
+            ->forTenantDisplay()
             ->latest()
             ->get();
 
@@ -150,9 +150,37 @@ class PublicRoomRequestController extends BaseController
 
         return Theme::scope(
             'findmeroom-room-request.front.manage',
-            compact('roomRequest', 'responses'),
+            compact('roomRequest', 'responses', 'token'),
             'plugins/findmeroom-room-request::front.manage'
         )->render();
+    }
+
+    public function markAsFound(string $token)
+    {
+        $roomRequest = $this->findRoomRequestByManageToken($token);
+
+        abort_unless($roomRequest && $roomRequest->canBeMarkedFound(), 404);
+
+        $roomRequest->markAsFound();
+
+        return redirect()
+            ->route('public.room-request.manage', ['token' => $token])
+            ->with('mark_found_success', true);
+    }
+
+    public function reportResponse(string $token, RoomRequestResponse $response, ReportRoomRequestResponseRequest $request)
+    {
+        $roomRequest = $this->findRoomRequestByManageToken($token);
+
+        abort_unless($roomRequest, 404);
+        abort_unless((int) $response->room_request_id === (int) $roomRequest->getKey(), 404);
+        abort_unless($response->status->getValue() === RoomRequestResponseStatusEnum::VISIBLE, 404);
+
+        $response->report($request->input('report_reason'));
+
+        return redirect()
+            ->route('public.room-request.manage', ['token' => $token])
+            ->with('report_response_success', true);
     }
 
     public function show(string $slug)
@@ -233,6 +261,13 @@ class PublicRoomRequestController extends BaseController
             ],
             'plugins/findmeroom-room-request::front.success'
         )->render();
+    }
+
+    protected function findRoomRequestByManageToken(string $token): ?RoomRequest
+    {
+        return RoomRequest::query()
+            ->where('manage_token', $token)
+            ->first();
     }
 
     protected function formViewData(): array

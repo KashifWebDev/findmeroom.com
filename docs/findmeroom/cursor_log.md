@@ -5,6 +5,49 @@
 
 ---
 
+## 2026-06-06 — Stage 4F verified (docs only)
+
+**Founder confirmed 16 manual checks:** mark found (account + guest), non-public + off board + blocked owner form, report response (account + guest) + hidden from tenant, admin list + visible/reject/spam moderation, backward compatibility on all public/account/manage routes.
+
+**Status:** Stage 4F verified ✓ — **ready to commit**. **Stage 4 MVP lead exchange complete.**
+
+**Next:** Commit Stage 4F on `stage-4-account-lead-exchange`.
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
+## 2026-06-06 — Stage 4F: report, mark found, admin response moderation
+
+**Task:** Tenant mark-as-found, report owner response, admin response moderation.
+
+**Routes added:**
+- `POST /account/room-requests/{id}/found` → `public.account.room-requests.found`
+- `POST /account/room-requests/{id}/responses/{response}/report` → `public.account.room-requests.responses.report`
+- `POST /my-room-request/{token}/found` → `public.room-request.manage.found`
+- `POST /my-room-request/{token}/responses/{response}/report` → `public.room-request.manage.responses.report`
+- Admin: `room-request-responses.index`, `.edit`, `.visible`, `.reject`, `.spam`
+
+**Key files:** `AccountRoomRequestController`, `PublicRoomRequestController`, `RoomRequestResponseController`, `RoomRequestResponseTable`, partials (`mark-found-action`, `tenant-response-item`, `response-actions`, `response-info`), `manage.blade.php`, `account/show.blade.php`, `responses/edit.blade.php`, models, permissions, lang, `RoomRequestServiceProvider` menu.
+
+**Commands:** `migrate` (nothing to migrate), `cache:clear`, `route:clear`, `view:clear` — all OK.
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
+## 2026-06-08 — Stage 4E committed (docs only)
+
+**Commit message:** *Add guest room request manage page*
+
+**Founder confirmed:** Stage 4E committed. Guest manage page complete.
+
+**Next:** Stage 4F — report response, mark found, admin response moderation. Do not start coding until founder gives Stage 4F build instruction.
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
 ## 2026-06-08 — Stage 4E verified (docs only)
 
 **Founder confirmed 9 manual checks:** guest manage link + summary, owner responses + phone on private page, invalid token 404, no responses on public detail, account dashboard + backward compatibility.

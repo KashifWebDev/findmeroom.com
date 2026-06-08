@@ -202,4 +202,41 @@ return [
         'spam_detected' => 'Submission could not be processed.',
         'too_many_responses' => 'Too many responses submitted. Please try again later.',
     ],
+
+    'tenant_actions' => [
+        'mark_found' => 'Mark as found',
+        'mark_found_confirm' => 'Mark this request as found? It will be removed from the public board and owners will no longer be able to respond.',
+        'mark_found_success' => 'Your request has been marked as found and removed from the public board.',
+        'mark_found_done' => 'This request is marked as found. It is no longer on the public board.',
+        'report_response' => 'Report response',
+        'report_reason' => 'Reason (optional)',
+        'report_reason_placeholder' => 'Briefly describe the issue (max 500 characters)',
+        'report_submit' => 'Submit report',
+        'report_success' => 'This response has been reported and hidden from your view.',
+    ],
+
+    'responses' => [
+        'menu' => 'Room Request Responses',
+        'admin_detail' => 'Owner response #:id',
+        'moderation' => 'Moderation',
+        'response_information' => 'Response information',
+        'tables' => [
+            'request' => 'Request',
+            'reported_at' => 'Reported at',
+            'report_reason' => 'Report reason',
+        ],
+        'actions' => [
+            'visible' => 'Mark as visible',
+            'reject' => 'Reject',
+            'spam' => 'Mark as spam',
+            'visible_confirm' => 'Make this response visible to the tenant again?',
+            'reject_confirm' => 'Reject this response? The tenant will not see it.',
+            'spam_confirm' => 'Mark this response as spam? The tenant will not see it.',
+        ],
+        'messages' => [
+            'visible' => 'Response marked as visible to tenant.',
+            'rejected' => 'Response rejected.',
+            'spam' => 'Response marked as spam.',
+        ],
+    ],
 ];

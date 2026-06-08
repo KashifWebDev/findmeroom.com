@@ -54,6 +54,15 @@ class RoomRequestServiceProvider extends ServiceProvider
                     'icon' => 'ti ti-home-search',
                     'route' => 'room-requests.index',
                     'permissions' => ['room-requests.index'],
+                ])
+                ->registerItem([
+                    'id' => 'cms-plugins-room-request-responses',
+                    'priority' => 6,
+                    'parent_id' => 'cms-plugins-real-estate',
+                    'name' => 'plugins/findmeroom-room-request::room-request.responses.menu',
+                    'icon' => 'ti ti-message-reply',
+                    'route' => 'room-request-responses.index',
+                    'permissions' => ['room-request-responses.index'],
                 ]);
         });
 

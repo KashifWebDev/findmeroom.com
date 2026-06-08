@@ -157,6 +157,22 @@ class RoomRequest extends BaseModel
         return true;
     }
 
+    public function canBeMarkedFound(): bool
+    {
+        return ! $this->isFound() && ! $this->found_at;
+    }
+
+    public function markAsFound(): self
+    {
+        $this->update([
+            'status' => RoomRequestStatusEnum::FOUND,
+            'found_at' => now(),
+            'is_public' => false,
+        ]);
+
+        return $this->refresh();
+    }
+
     public function displayBudget(): string
     {
         if ($this->budget_min) {

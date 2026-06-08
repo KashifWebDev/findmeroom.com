@@ -7,6 +7,18 @@
                     <p class="desc text-muted">{{ $roomRequest->public_name }} · {{ $roomRequest->displayLocationShort() }}</p>
                 </div>
 
+                @if (session('mark_found_success'))
+                    <div class="alert alert-success mb-4" role="status">
+                        {{ trans('plugins/findmeroom-room-request::room-request.tenant_actions.mark_found_success') }}
+                    </div>
+                @endif
+
+                @if (session('report_response_success'))
+                    <div class="alert alert-success mb-4" role="status">
+                        {{ trans('plugins/findmeroom-room-request::room-request.tenant_actions.report_success') }}
+                    </div>
+                @endif
+
                 <div class="alert alert-warning mb-4" role="note">
                     {{ trans('plugins/findmeroom-room-request::room-request.manage.private_notice') }}
                 </div>
@@ -14,7 +26,7 @@
                 <div class="card border mb-4">
                     <div class="card-body">
                         <h2 class="h5 mb-3">{{ trans('plugins/findmeroom-room-request::room-request.manage.request_summary') }}</h2>
-                        <dl class="row mb-0">
+                        <dl class="row mb-4">
                             <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.form.public_name') }}</dt>
                             <dd class="col-sm-8">{{ $roomRequest->public_name }}</dd>
 
@@ -64,6 +76,11 @@
                                 </dd>
                             @endif
                         </dl>
+
+                        @include('plugins/findmeroom-room-request::partials.mark-found-action', [
+                            'roomRequest' => $roomRequest,
+                            'action' => route('public.room-request.manage.found', ['token' => $token]),
+                        ])
                     </div>
                 </div>
 
@@ -87,37 +104,14 @@
                             </div>
                         @else
                             @foreach ($responses as $response)
-                                <div class="border rounded p-3 mb-3 {{ $loop->last ? 'mb-0' : '' }}">
-                                    <dl class="row mb-0">
-                                        <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.owner_response.owner_name') }}</dt>
-                                        <dd class="col-sm-8">{{ $response->owner_name }}</dd>
-
-                                        <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.owner_response.owner_phone') }}</dt>
-                                        <dd class="col-sm-8"><a href="tel:{{ $response->owner_phone }}">{{ $response->owner_phone }}</a></dd>
-
-                                        @if ($response->owner_email)
-                                            <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.owner_response.owner_email') }}</dt>
-                                            <dd class="col-sm-8"><a href="mailto:{{ $response->owner_email }}">{{ $response->owner_email }}</a></dd>
-                                        @endif
-
-                                        <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.owner_response.area_text') }}</dt>
-                                        <dd class="col-sm-8">{{ $response->area_text }}</dd>
-
-                                        <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.owner_response.rent') }}</dt>
-                                        <dd class="col-sm-8">Rs {{ number_format($response->rent) }}</dd>
-
-                                        @if ($response->room_type)
-                                            <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.owner_response.room_type') }}</dt>
-                                            <dd class="col-sm-8">{{ trans('plugins/findmeroom-room-request::room-request.options.room_type.' . $response->room_type) }}</dd>
-                                        @endif
-
-                                        <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.owner_response.message') }}</dt>
-                                        <dd class="col-sm-8">{{ $response->message }}</dd>
-
-                                        <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.manage.received_at') }}</dt>
-                                        <dd class="col-sm-8">{{ $response->created_at->translatedFormat('M d, Y H:i') }}</dd>
-                                    </dl>
-                                </div>
+                                @include('plugins/findmeroom-room-request::partials.tenant-response-item', [
+                                    'response' => $response,
+                                    'wrapperClass' => 'border rounded p-3 mb-3' . ($loop->last ? ' mb-0' : ''),
+                                    'reportAction' => route('public.room-request.manage.responses.report', [
+                                        'token' => $token,
+                                        'response' => $response->getKey(),
+                                    ]),
+                                ])
                             @endforeach
                         @endif
                     </div>

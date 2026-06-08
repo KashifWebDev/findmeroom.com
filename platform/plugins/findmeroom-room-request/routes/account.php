@@ -13,6 +13,14 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
             Route::get('room-requests', [AccountRoomRequestController::class, 'index'])
                 ->name('room-requests.index');
 
+            Route::post('room-requests/{roomRequest}/found', [AccountRoomRequestController::class, 'markAsFound'])
+                ->name('room-requests.found')
+                ->wherePrimaryKey('roomRequest');
+
+            Route::post('room-requests/{roomRequest}/responses/{response}/report', [AccountRoomRequestController::class, 'reportResponse'])
+                ->name('room-requests.responses.report')
+                ->wherePrimaryKey('response');
+
             Route::get('room-requests/{roomRequest}', [AccountRoomRequestController::class, 'show'])
                 ->name('room-requests.show')
                 ->wherePrimaryKey();

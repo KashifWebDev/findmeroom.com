@@ -1,25 +1,25 @@
 # FindMeRoom — Current State
 
-> **Last updated:** 2026-06-08 (Stage 4E verified — ready to commit)
+> **Last updated:** 2026-06-06 (Stage 4F verified — ready to commit)
 > **Sync docs:** Read this file before every coding task. Update this file after every coding task.
 
 ---
 
 ## Current stage
 
-**Stage 4E verified — ready to commit**
+**Stage 4 MVP lead exchange — complete (verified, ready to commit Stage 4F)**
 
 Branch: `stage-4-account-lead-exchange`
 
 **Plan:** `.cursor/plans/stage_4_account_lead_exchange.md`
 
-**Next:** Commit Stage 4E. Stage 4F — report, mark found, admin moderation (do not start until after commit and founder build instruction).
+**Next:** Commit Stage 4F on `stage-4-account-lead-exchange`. Then pick post-MVP work from task queue (optional cron, email/WhatsApp/sitemap, SEO, blog).
 
 **Site navigation note:** Header and main menu links (e.g. Post Room Need, Room Requests) are managed from **Admin → Appearance → Menus** unless a specific in-page CTA is missing from code.
 
 ---
 
-## Stage 3 — Committed ✓ · Stage 4B — Committed ✓ · Stage 4C — Committed ✓ · Stage 4D — Committed ✓
+## Stage 3 — Committed ✓ · Stage 4B–4E — Committed ✓ · Stage 4F — Verified ✓ (ready to commit) · Stage 4 MVP — Complete ✓
 
 ---
 
@@ -31,10 +31,29 @@ Branch: `stage-4-account-lead-exchange`
 | 4B DB + models + ownership | ✓ Committed |
 | 4C Owner response form | ✓ Committed |
 | 4D Account dashboard pages | ✓ Committed |
-| 4E Guest manage token page (full) | ✓ Verified (9 manual checks) — **ready to commit** |
-| 4F Report / mark found / admin | Not started |
+| 4E Guest manage token page (full) | ✓ Committed |
+| 4F Report / mark found / admin | ✓ Verified — **ready to commit** |
 
-**Goal:** Automated tenant ↔ owner lead exchange using existing Homzen `/account` dashboard.
+**Goal:** Automated tenant ↔ owner lead exchange using existing Homzen `/account` dashboard. **Stage 4 MVP is complete** (4B–4F verified; 4F uncommitted).
+
+### Stage 4F — Founder verification (2026-06-06) ✓
+
+1. Tenant can mark request as found from account dashboard
+2. Guest can mark request as found from private manage page
+3. Found request becomes non-public
+4. Found request disappears from `/room-requests`
+5. Owner response form is blocked after request is found
+6. Tenant can report owner response from account dashboard
+7. Guest can report owner response from private manage page
+8. Reported response disappears from tenant view
+9. Admin can see owner responses under Real Estate → Room Request Responses
+10. Admin can mark response visible
+11. Admin can reject response
+12. Admin can mark response as spam
+13. `/post-room-need` still works
+14. `/room-requests` still works
+15. `/account/room-requests` still works
+16. `/my-room-request/{token}` still works
 
 ### Stage 4E — Founder verification (2026-06-08) ✓
 
@@ -58,9 +77,13 @@ Branch: `stage-4-account-lead-exchange`
 - Optional account CTA (register/login) for guests — not forced
 - Homzen public styling (`flat-section`, cards) matching other room request pages
 
-### Still deferred
+### Stage 4F delivered
 
-- **4F:** Report, mark found, admin response moderation UI
+- **Mark as found** — account (`POST /account/room-requests/{id}/found`) and guest manage (`POST /my-room-request/{token}/found`); sets `status=found`, `found_at=now`, `is_public=false`; blocks new owner responses; existing visible responses remain for tenant
+- **Report response** — account and guest manage POST routes; sets `status=reported`, `reported_at`, optional `report_reason` (max 500); hides from tenant immediately
+- **Tenant visibility** — dashboard and guest manage use `forTenantDisplay()` scope (`status=visible` only)
+- **Admin moderation** — Real Estate → Room Request Responses (`admin/room-request-responses`); list + edit with Mark visible / Reject / Spam actions
+- **Owner response blocking** — `acceptsOwnerResponses()` rejects found/expired/rejected/spam/pending/non-public requests
 
 ---
 

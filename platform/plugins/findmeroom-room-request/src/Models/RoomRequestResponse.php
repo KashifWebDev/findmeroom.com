@@ -76,6 +76,33 @@ class RoomRequestResponse extends BaseModel
             ]);
     }
 
+    public function scopeForTenantDisplay(Builder $query): Builder
+    {
+        return $query->where('status', RoomRequestResponseStatusEnum::VISIBLE);
+    }
+
+    public function report(?string $reason = null): self
+    {
+        $this->update([
+            'status' => RoomRequestResponseStatusEnum::REPORTED,
+            'reported_at' => now(),
+            'report_reason' => $reason,
+        ]);
+
+        return $this->refresh();
+    }
+
+    public function markVisibleForTenant(): self
+    {
+        $this->update([
+            'status' => RoomRequestResponseStatusEnum::VISIBLE,
+            'reported_at' => null,
+            'report_reason' => null,
+        ]);
+
+        return $this->refresh();
+    }
+
     public function scopeNotSpam(Builder $query): Builder
     {
         return $query->where('status', '!=', RoomRequestResponseStatusEnum::SPAM);

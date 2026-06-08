@@ -125,6 +125,24 @@ return [
         'back_to_board' => 'Back to room requests',
     ],
 
+    'owner_response' => [
+        'heading' => 'I have a matching room',
+        'intro' => 'Share your room details below. The tenant will be able to view your offer inside FindMeRoom.',
+        'owner_name' => 'Your name',
+        'owner_phone' => 'Phone / WhatsApp',
+        'owner_email' => 'Email (optional)',
+        'area_text' => 'Room location / area',
+        'rent' => 'Monthly rent (PKR)',
+        'room_type' => 'Room type',
+        'room_type_select' => 'Select…',
+        'message' => 'Message to tenant',
+        'submit' => 'Send my room details',
+        'success_heading' => 'Your response has been sent.',
+        'success_message' => 'The tenant will be able to view your room details inside FindMeRoom.',
+        'request_not_eligible' => 'This room request is no longer accepting responses.',
+        'per_request_limit' => 'You have reached the daily limit for responses to this request. Please try again tomorrow.',
+    ],
+
     'manage' => [
         'title' => 'Your room request',
         'heading' => 'Your room request',
@@ -155,5 +173,6 @@ return [
         'phone_invalid' => 'Please enter a valid Pakistan mobile number (e.g. 03XXXXXXXXX).',
         'budget_max_gte_min' => 'Maximum budget must be greater than or equal to minimum budget.',
         'spam_detected' => 'Submission could not be processed.',
+        'too_many_responses' => 'Too many responses submitted. Please try again later.',
     ],
 ];

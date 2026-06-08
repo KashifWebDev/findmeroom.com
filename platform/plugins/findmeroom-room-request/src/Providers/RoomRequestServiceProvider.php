@@ -10,7 +10,10 @@ use FindMeRoom\RoomRequest\Listeners\AttachRoomRequestsOnAccountAuthListener;
 use FindMeRoom\RoomRequest\Listeners\RegisterPublicRoomRequestRoutes;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\RateLimiter;
 
 class RoomRequestServiceProvider extends ServiceProvider
 {
@@ -18,6 +21,12 @@ class RoomRequestServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        RateLimiter::for('room-request-owner-response', function (Request $request) {
+            return Limit::perDay(
+                (int) config('plugins.findmeroom-room-request.room-request.owner_response_daily_limit', 10)
+            )->by($request->ip());
+        });
+
         $this
             ->setNamespace('plugins/findmeroom-room-request')
             ->loadHelpers()

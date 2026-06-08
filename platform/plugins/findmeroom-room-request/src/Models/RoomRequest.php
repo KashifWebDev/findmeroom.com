@@ -144,6 +144,19 @@ class RoomRequest extends BaseModel
         return true;
     }
 
+    public function acceptsOwnerResponses(): bool
+    {
+        if (! $this->isPubliclyVisible()) {
+            return false;
+        }
+
+        if ($this->isFound() || $this->isSpam() || $this->isRejected() || $this->found_at) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function displayBudget(): string
     {
         if ($this->budget_min) {

@@ -7,8 +7,11 @@ use Botble\Location\Models\City;
 use Botble\Location\Models\State;
 use Botble\SeoHelper\Facades\SeoHelper;
 use Botble\Theme\Facades\Theme;
+use FindMeRoom\RoomRequest\Enums\RoomRequestResponseStatusEnum;
 use FindMeRoom\RoomRequest\Http\Requests\StoreRoomRequestRequest;
+use FindMeRoom\RoomRequest\Http\Requests\StoreRoomRequestResponseRequest;
 use FindMeRoom\RoomRequest\Models\RoomRequest;
+use FindMeRoom\RoomRequest\Models\RoomRequestResponse;
 use FindMeRoom\RoomRequest\Support\LocationFormHelper;
 use FindMeRoom\RoomRequest\Support\PhoneHelper;
 use FindMeRoom\RoomRequest\Support\PublicRoomRequestQuery;
@@ -166,9 +169,45 @@ class PublicRoomRequestController extends BaseController
 
         return Theme::scope(
             'findmeroom-room-request.front.show',
-            compact('roomRequest'),
+            [
+                'roomRequest' => $roomRequest,
+                'canRespond' => $roomRequest->acceptsOwnerResponses(),
+            ],
             'plugins/findmeroom-room-request::front.show'
         )->render();
+    }
+
+    public function respond(string $slug, StoreRoomRequestResponseRequest $request)
+    {
+        if (filled($request->input('website'))) {
+            return redirect()
+                ->route('public.room-request.show', ['slug' => $slug])
+                ->with('owner_response_success', true);
+        }
+
+        $roomRequest = PublicRoomRequestQuery::findVisibleBySlug($slug);
+
+        abort_unless($roomRequest && $roomRequest->acceptsOwnerResponses(), 404);
+
+        $responderAccountId = auth('account')->check() ? (int) auth('account')->id() : null;
+
+        RoomRequestResponse::query()->create([
+            'room_request_id' => $roomRequest->getKey(),
+            'owner_name' => $request->input('owner_name'),
+            'owner_phone' => PhoneHelper::normalize($request->input('owner_phone')),
+            'owner_email' => $request->input('owner_email'),
+            'area_text' => $request->input('area_text'),
+            'rent' => (int) $request->input('rent'),
+            'room_type' => $request->input('room_type'),
+            'message' => $request->input('message'),
+            'status' => RoomRequestResponseStatusEnum::VISIBLE,
+            'responder_account_id' => $responderAccountId,
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()
+            ->route('public.room-request.show', ['slug' => $slug])
+            ->with('owner_response_success', true);
     }
 
     public function success()

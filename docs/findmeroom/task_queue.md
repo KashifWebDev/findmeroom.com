@@ -1,24 +1,22 @@
 # FindMeRoom — Task Queue
 
-> **Last updated:** 2026-06-08 (Stage 4B verified — ready to commit)  
+> **Last updated:** 2026-06-08 (Stage 4C verified — ready to commit)  
 > Read before every coding task. Reorder only with founder approval.
 
 **Legend:** `[ ]` pending · `[~]` in progress · `[x]` done · `[!]` awaiting founder approval
 
 ---
 
-## Now — Commit Stage 4B, then Stage 4C
+## Now — Commit Stage 4C, then Stage 4D
 
 **Branch:** `stage-4-account-lead-exchange`
 
 | Step | # | Task | Owner | Notes |
 |------|---|------|-------|-------|
-| C3g | [x] | Commit Stage 3 | Founder/Dev | Done |
-| 4A | [x] | Stage 4 plan — account lead exchange | Dev | `.cursor/plans/stage_4_account_lead_exchange.md` |
-| 4B | [x] | **DB migration + model relations** | Dev | Verified (12 checks) — **ready to commit** |
-| C4B | [!] | **Commit Stage 4B** | Founder/Dev | Awaiting commit |
-| 4C | [ ] | Owner response on public detail | Dev | After Stage 4B commit |
-| 4D | [ ] | Tenant account dashboard pages | Dev | Includes My Room Requests sidebar |
+| 4B | [x] | DB migration + model relations | Dev | Committed |
+| 4C | [x] | **Owner response on public detail** | Dev | Verified (12 checks) — **ready to commit** |
+| C4C | [!] | **Commit Stage 4C** | Founder/Dev | Awaiting commit |
+| 4D | [ ] | Tenant account dashboard pages | Dev | After Stage 4C commit |
 | 4E | [ ] | Guest manage token page (full) | Dev | Placeholder exists from 4B |
 | 4F | [ ] | Report spam, mark found, admin moderation | Dev | |
 
@@ -39,13 +37,13 @@
 
 | Item | Blocker |
 |------|---------|
-| Stage 4C | Commit Stage 4B first |
+| Stage 4D | Commit Stage 4C first |
 
 ---
 
 ## Completed
 
-Stage 1 ✓ · Stage 2A ✓ · Stage 2B ✓ · Stage 2C Phase 1 ✓ · Stage 3 committed ✓ · Stage 4A plan ✓ · Stage 4B verified ✓ · Branch `stage-4-account-lead-exchange` ✓
+Stage 1 ✓ · Stage 2 ✓ · Stage 3 committed ✓ · Stage 4A ✓ · Stage 4B committed ✓ · Stage 4C verified ✓
 
 See `current_state.md`.
 
@@ -55,15 +53,6 @@ See `current_state.md`.
 
 **Before any task:** read sync docs + Stage 4 plan.
 
-**After application code changes:** Cursor runs by default when relevant:
-
-```bash
-php artisan migrate
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
-```
-
-Report results in handoff. Do not ask founder to run manually unless Cursor cannot or production safety applies.
+**After application code changes:** Cursor runs `migrate`, `cache:clear`, `route:clear`, `view:clear` when relevant; reports results in handoff.
 
 **After coding:** update `current_state.md` and `cursor_log.md`.

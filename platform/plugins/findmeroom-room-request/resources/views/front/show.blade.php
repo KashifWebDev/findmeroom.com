@@ -2,6 +2,23 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
+                @if (session('owner_response_success'))
+                    <div class="alert alert-success mb-4" role="status">
+                        <p class="mb-1 fw-semibold">{{ trans('plugins/findmeroom-room-request::room-request.owner_response.success_heading') }}</p>
+                        <p class="mb-0">{{ trans('plugins/findmeroom-room-request::room-request.owner_response.success_message') }}</p>
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert alert-danger mb-4">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <div class="box-title mb-4">
                     <h1 class="title">{{ $roomRequest->public_name }} {{ trans('plugins/findmeroom-room-request::room-request.show.needs_room') }}</h1>
                     <p class="desc text-muted">{{ $roomRequest->displayLocation() }} · {{ $roomRequest->area_text }}</p>
@@ -53,14 +70,13 @@
                                 <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.tables.expires_at') }}</dt>
                                 <dd class="col-sm-8">{{ $roomRequest->expires_at->translatedFormat('M d, Y') }}</dd>
                             @endif
-
-                            @if ($roomRequest->allow_public_phone && $roomRequest->phone)
-                                <dt class="col-sm-4">{{ trans('plugins/findmeroom-room-request::room-request.form.phone') }}</dt>
-                                <dd class="col-sm-8"><a href="tel:{{ $roomRequest->phone }}">{{ $roomRequest->phone }}</a></dd>
-                            @endif
                         </dl>
                     </div>
                 </div>
+
+                @if ($canRespond ?? false)
+                    @include('plugins/findmeroom-room-request::partials.owner-response-form', ['roomRequest' => $roomRequest])
+                @endif
 
                 <div class="d-flex flex-wrap gap-2">
                     <a href="{{ route('public.room-request.index') }}" class="tf-btn btn-line">

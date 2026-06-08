@@ -30,6 +30,11 @@ class RegisterPublicRoomRequestRoutes
         Route::get('room-requests', [PublicRoomRequestController::class, 'index'])
             ->name('public.room-request.index');
 
+        Route::post('room-requests/{slug}/respond', [PublicRoomRequestController::class, 'respond'])
+            ->middleware('throttle:room-request-owner-response')
+            ->where('slug', '[a-zA-Z0-9\-]+')
+            ->name('public.room-request.respond');
+
         Route::get('room-requests/{slug}', [PublicRoomRequestController::class, 'show'])
             ->where('slug', '[a-zA-Z0-9\-]+')
             ->name('public.room-request.show');

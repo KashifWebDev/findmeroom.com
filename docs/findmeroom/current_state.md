@@ -1,25 +1,29 @@
 # FindMeRoom — Current State
 
-> **Last updated:** 2026-06-08 (Stage 4B verified — ready to commit)
+> **Last updated:** 2026-06-08 (Stage 4C verified — ready to commit)
 > **Sync docs:** Read this file before every coding task. Update this file after every coding task.
 
 ---
 
 ## Current stage
 
-**Stage 4B verified — ready to commit**
+**Stage 4C verified — ready to commit**
 
 Branch: `stage-4-account-lead-exchange`
 
 **Plan:** `.cursor/plans/stage_4_account_lead_exchange.md`
 
-**Next:** Commit Stage 4B, then Stage 4C — owner response form on public detail (do not start 4C until after commit).
+**Next:** Commit Stage 4C, then Stage 4D — account dashboard pages (do not start 4D until after commit).
 
 ---
 
 ## Stage 3 — Committed ✓
 
 Public form, location integration, admin approval, board, detail — verified and committed.
+
+## Stage 4B — Committed ✓
+
+Ownership columns, manage placeholder, public route registration fix — verified and committed.
 
 ---
 
@@ -28,40 +32,44 @@ Public form, location integration, admin approval, board, detail — verified an
 | Phase | Status |
 |-------|--------|
 | 4A Planning | ✓ Complete |
-| 4B DB + models + ownership service | ✓ Verified (12 manual checks) — **ready to commit** |
-| 4C Owner response form | Not started |
+| 4B DB + models + ownership | ✓ Committed |
+| 4C Owner response form | ✓ Verified (12 manual checks) — **ready to commit** |
 | 4D Account dashboard pages | Not started |
 | 4E Guest manage token page (full) | Not started |
 | 4F Report / mark found / admin | Not started |
 
 **Goal:** Automated tenant ↔ owner lead exchange using existing Homzen `/account` dashboard.
 
-### Stage 4B — Founder verification (2026-06-08) ✓
+### Stage 4C — Founder verification (2026-06-08) ✓
 
-1. `/post-room-need` loads as guest
-2. Guest request submission works
-3. Success page shows private manage link
-4. `/my-room-request/{token}` opens placeholder page
-5. Invalid manage token returns 404
-6. Logged-in account can open `/post-room-need`
-7. Logged-in request stores `account_id`
-8. `/room-requests` still works
-9. `/room-requests/{slug}` still works
-10. Admin approval still works
-11. `/account/dashboard` still works
-12. My Room Requests sidebar missing as expected (deferred to 4D)
+1. Approved `/room-requests/{slug}` shows owner response form
+2. Owner can submit response
+3. Success message after submit
+4. Response stored in `room_request_responses`
+5. Response status is `visible`
+6. Tenant phone not visible to owner
+7. Tenant email not visible to owner
+8. Tenant full name not visible to owner
+9. Response not publicly listed on request page
+10. `/post-room-need` still works
+11. `/room-requests` still works
+12. Admin room request approval still works
 
-### Stage 4B delivered
+### Stage 4C delivered
 
-- Migrations: `account_id`, `manage_token` on `room_requests`; lead-exchange columns on `room_request_responses`
-- Models: `RoomRequest` ↔ `Account`, scopes/helpers; `RoomRequestResponse` relations and tenant-visible scopes
-- `RoomRequestOwnershipService`: `attachByEmail`, `generateManageToken`, `ensureManageToken`, `manageUrl`
-- Store flow: logged-in → `account_id`; guest → `manage_token`
-- Success page: guest private manage link
-- Guest manage placeholder: `GET /my-room-request/{token}` (`public.room-request.manage`) — summary only, noindex, no responses yet (full page in 4E)
-- Public routes register on `ThemeRoutingBeforeEvent` (before CMS `{slug?}` catch-all)
-- Account attach: `Login` + `Registered` listener in plugin (no real-estate controller edits)
-- **Deferred to 4D:** “My Room Requests” account sidebar item and `/account/room-requests` pages
+- Owner response form on `/room-requests/{slug}` — “I have a matching room”
+- `POST /room-requests/{slug}/respond` (`public.room-request.respond`)
+- Stores `room_request_responses` with `status = visible`, `ip_address`, optional `responder_account_id`
+- Honeypot + throttle: 10 responses/IP/day (Laravel limiter) + 3 responses/IP/day per request (DB check)
+- Success message on detail page after submit
+- Tenant privacy: public detail shows `public_name` only — no tenant phone, email, or full name to owners
+- Responses not listed publicly on detail page (tenant views in 4D/4E)
+
+### Still deferred
+
+- **4D:** “My Room Requests” sidebar + account dashboard
+- **4E:** Full guest manage page with responses list
+- **4F:** Report, mark found, admin response moderation UI
 
 ---
 
@@ -76,7 +84,7 @@ php artisan route:clear
 php artisan view:clear
 ```
 
-Cursor reports command results in the handoff. Do not ask the founder to run these manually unless Cursor cannot run them or there is a production safety concern.
+Cursor reports command results in the handoff.
 
 After coding: also update `current_state.md` and `cursor_log.md`.
 

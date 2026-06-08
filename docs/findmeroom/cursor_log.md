@@ -5,6 +5,41 @@
 
 ---
 
+## 2026-06-08 — Stage 4C verified (docs only)
+
+**Founder confirmed 12 manual checks:** owner form on approved detail, submit + success, `visible` status in DB, tenant privacy (no phone/email/full name), no public response list, backward compatibility (post-room-need, board, admin approval).
+
+**Status:** Stage 4C verified ✓ — **ready to commit**
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
+## 2026-06-08 — Stage 4C: owner response form on public detail
+
+**Task:** Owner response form on `/room-requests/{slug}`; store responses; no dashboard, no public response list.
+
+**Route:** `POST /room-requests/{slug}/respond` (`public.room-request.respond`)
+
+**Files:**
+- `StoreRoomRequestResponseRequest.php` — validation, honeypot, per-request IP limit (3/day)
+- `PublicRoomRequestController.php` — `respond()`, `acceptsOwnerResponses()` on show
+- `RoomRequest.php` — `acceptsOwnerResponses()`
+- `RegisterPublicRoomRequestRoutes.php` — respond route
+- `RoomRequestServiceProvider.php` — `room-request-owner-response` rate limiter (10/IP/day)
+- `partials/owner-response-form.blade.php`, `front/show.blade.php`
+- `config/room-request.php`, `resources/lang/en/room-request.php`
+
+**Response status:** `visible` after validation (immediate tenant visibility per founder decision).
+
+**Privacy:** Removed tenant phone from public detail; never shows full name or email to owners.
+
+**Throttle:** 10 responses/IP/day (middleware) + 3 responses/IP/day per request (validator). Documented limitation: global limit is IP-only, not per-account.
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
 ## 2026-06-08 — Stage 4B verified (docs only)
 
 **Founder confirmed 12 manual checks:** guest/logged-in form, manage link + placeholder, invalid token 404, board/detail, admin approval, account dashboard, sidebar deferred to 4D.

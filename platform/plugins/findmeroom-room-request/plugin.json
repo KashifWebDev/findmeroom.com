@@ -1,0 +1,11 @@
+{
+    "id": "findmeroom/room-request",
+    "name": "FindMeRoom Room Request",
+    "namespace": "FindMeRoom\\RoomRequest\\",
+    "provider": "FindMeRoom\\RoomRequest\\Providers\\RoomRequestServiceProvider",
+    "author": "FindMeRoom",
+    "url": "https://findmeroom.com",
+    "version": "1.0.0",
+    "description": "Tenant room need submissions with admin approval workflow.",
+    "minimum_core_version": "7.4.0"
+}

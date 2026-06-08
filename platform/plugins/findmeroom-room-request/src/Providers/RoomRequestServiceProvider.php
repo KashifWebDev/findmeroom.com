@@ -1,0 +1,51 @@
+<?php
+
+namespace FindMeRoom\RoomRequest\Providers;
+
+use Botble\Base\Facades\DashboardMenu;
+use Botble\Base\Supports\ServiceProvider;
+use Botble\Base\Traits\LoadAndPublishDataTrait;
+use Botble\Theme\Events\ThemeRoutingBeforeEvent;
+use FindMeRoom\RoomRequest\Listeners\AttachRoomRequestsOnAccountAuthListener;
+use FindMeRoom\RoomRequest\Listeners\RegisterPublicRoomRequestRoutes;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Event;
+
+class RoomRequestServiceProvider extends ServiceProvider
+{
+    use LoadAndPublishDataTrait;
+
+    public function boot(): void
+    {
+        $this
+            ->setNamespace('plugins/findmeroom-room-request')
+            ->loadHelpers()
+            ->loadAndPublishConfigurations(['permissions', 'room-request'])
+            ->loadRoutes()
+            ->loadAndPublishViews()
+            ->loadAndPublishTranslations()
+            ->loadMigrations()
+            ->publishAssets();
+
+        $this->app->register(CommandServiceProvider::class);
+
+        Event::listen(ThemeRoutingBeforeEvent::class, RegisterPublicRoomRequestRoutes::class);
+
+        Event::listen(Login::class, AttachRoomRequestsOnAccountAuthListener::class);
+        Event::listen(Registered::class, AttachRoomRequestsOnAccountAuthListener::class);
+
+        DashboardMenu::default()->beforeRetrieving(function (): void {
+            DashboardMenu::make()
+                ->registerItem([
+                    'id' => 'cms-plugins-room-requests',
+                    'priority' => 5,
+                    'parent_id' => 'cms-plugins-real-estate',
+                    'name' => 'plugins/findmeroom-room-request::room-request.menu',
+                    'icon' => 'ti ti-home-search',
+                    'route' => 'room-requests.index',
+                    'permissions' => ['room-requests.index'],
+                ]);
+        });
+    }
+}

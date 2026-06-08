@@ -1,0 +1,159 @@
+<?php
+
+return [
+    'menu' => 'Room Requests',
+    'name' => 'Room Request',
+    'admin_detail' => 'Room request: :name',
+    'request_information' => 'Request information',
+    'approval_details' => 'Approval details',
+    'moderation' => 'Moderation',
+
+    'statuses' => [
+        'pending' => 'Pending',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
+        'found' => 'Found',
+        'expired' => 'Expired',
+        'spam' => 'Spam',
+    ],
+
+    'response_statuses' => [
+        'pending' => 'Pending',
+        'visible' => 'Visible',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
+        'reported' => 'Reported',
+        'spam' => 'Spam',
+    ],
+
+    'tables' => [
+        'public_name' => 'Public name',
+        'city' => 'City',
+        'area' => 'Area',
+        'budget_max' => 'Budget max',
+        'status' => 'Status',
+        'is_public' => 'Is public',
+        'created_at' => 'Submitted',
+        'approved_at' => 'Approved at',
+        'approved_by' => 'Approved by',
+        'expires_at' => 'Expires at',
+        'share_slug' => 'Share slug',
+    ],
+
+    'form' => [
+        'full_name' => 'Full name',
+        'public_name' => 'Name shown publicly',
+        'public_name_hint' => 'First name or nickname only — not your full name.',
+        'phone' => 'Phone / WhatsApp',
+        'email' => 'Email (optional)',
+        'country' => 'Country',
+        'state' => 'State / Province',
+        'city' => 'City',
+        'location' => 'Location',
+        'city_select' => 'Select a city',
+        'city_text' => 'City name (fallback)',
+        'city_text_hint' => 'Only if your city is not listed above.',
+        'area' => 'Area / neighborhood',
+        'area_placeholder' => 'e.g. G-11, Bahria Town, DHA Phase 2',
+        'budget' => 'Budget',
+        'budget_min' => 'Minimum budget (PKR/month)',
+        'budget_max' => 'Maximum budget (PKR/month)',
+        'gender_preference' => 'Gender preference',
+        'room_type' => 'Room type',
+        'tenant_type' => 'I am a',
+        'tenant_type_select' => 'Select…',
+        'nearby_place' => 'Near (university, office, landmark)',
+        'move_in_date' => 'Move-in date',
+        'notes' => 'Additional details',
+        'allow_public_phone' => 'Show my phone number on the public request page (optional)',
+    ],
+
+    'options' => [
+        'gender' => [
+            'any' => 'Any',
+            'female_only' => 'Female only',
+            'male_only' => 'Male only',
+        ],
+        'room_type' => [
+            'any' => 'Any',
+            'single' => 'Single room',
+            'shared' => 'Shared room',
+        ],
+        'tenant_type' => [
+            'student' => 'Student',
+            'working' => 'Working professional',
+            'family' => 'Family',
+            'other' => 'Other',
+        ],
+    ],
+
+    'front' => [
+        'form_title' => 'Post Your Room Need',
+        'form_heading' => 'Tell us what kind of room you need',
+        'form_intro' => 'We review every request before it goes live. Owners can respond once your need is approved.',
+        'submit' => 'Submit room need',
+        'success_title' => 'Request submitted',
+        'success_heading' => 'Thank you — we received your room need',
+        'success_message' => 'Our team will review your request shortly. You will not receive an email — check back later or contact us if urgent.',
+        'manage_link_heading' => 'Save this private link to track owner responses later',
+        'manage_link_hint' => 'Bookmark or copy this URL. You will need it to view responses after your request is approved.',
+        'post_another' => 'Post another need',
+        'find_a_room' => 'Find a Room',
+    ],
+
+    'board' => [
+        'title' => 'Room Requests',
+        'seo_title' => 'Room Requests — People Looking for Rooms | FindMeRoom',
+        'heading' => 'People looking for rooms',
+        'intro' => 'Browse active room needs posted by tenants. Listings are reviewed before they appear here.',
+        'empty' => 'No active room requests match your filters right now.',
+        'filter' => 'Apply filters',
+        'reset' => 'Reset',
+        'all' => 'All',
+        'max_budget_filter' => 'Max budget up to (PKR/month)',
+        'city_text_filter' => 'City name search',
+        'legacy_city_hint' => 'For older requests without city list',
+        'up_to_budget' => 'Up to Rs :amount',
+        'listed' => 'Listed',
+        'view_details' => 'View details',
+        'post_need' => 'Post Room Need',
+    ],
+
+    'show' => [
+        'seo_title' => 'Room needed near :area under Rs :budget | FindMeRoom',
+        'needs_room' => 'needs a room',
+        'back_to_board' => 'Back to room requests',
+    ],
+
+    'manage' => [
+        'title' => 'Your room request',
+        'heading' => 'Your room request',
+        'responses_placeholder' => 'Owner responses will appear here after this feature is enabled.',
+    ],
+
+    'actions' => [
+        'approve' => 'Approve',
+        'reject' => 'Reject',
+        'spam' => 'Mark as Spam',
+        'approve_confirm' => 'Approve this request? It will become public for 30 days after approval.',
+        'reject_confirm' => 'Reject this request? It will not be shown publicly.',
+        'spam_confirm' => 'Mark this request as spam?',
+        'no_actions' => 'No moderation actions available for this status.',
+        'pending_hint' => 'This request is pending review. Use the buttons below to approve, reject, or mark as spam.',
+        'approved_info' => 'This request is approved and public (until expiry). Share slug and expiry are shown in Approval details.',
+        'rejected_info' => 'This request was rejected and is not public.',
+        'spam_info' => 'This request was marked as spam and is not public.',
+    ],
+
+    'messages' => [
+        'approved' => 'Room request approved successfully.',
+        'rejected' => 'Room request rejected.',
+        'spam' => 'Room request marked as spam.',
+    ],
+
+    'validation' => [
+        'phone_invalid' => 'Please enter a valid Pakistan mobile number (e.g. 03XXXXXXXXX).',
+        'budget_max_gte_min' => 'Maximum budget must be greater than or equal to minimum budget.',
+        'spam_detected' => 'Submission could not be processed.',
+    ],
+];

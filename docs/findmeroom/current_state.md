@@ -1,29 +1,23 @@
 # FindMeRoom — Current State
 
-> **Last updated:** 2026-06-08 (Stage 4C verified — ready to commit)
+> **Last updated:** 2026-06-08 (Stage 4D verified — ready to commit)
 > **Sync docs:** Read this file before every coding task. Update this file after every coding task.
 
 ---
 
 ## Current stage
 
-**Stage 4C verified — ready to commit**
+**Stage 4D verified — ready to commit**
 
 Branch: `stage-4-account-lead-exchange`
 
 **Plan:** `.cursor/plans/stage_4_account_lead_exchange.md`
 
-**Next:** Commit Stage 4C, then Stage 4D — account dashboard pages (do not start 4D until after commit).
+**Next:** Commit Stage 4D. Stage 4E — guest manage full page (do not start until after commit and founder build instruction).
 
 ---
 
-## Stage 3 — Committed ✓
-
-Public form, location integration, admin approval, board, detail — verified and committed.
-
-## Stage 4B — Committed ✓
-
-Ownership columns, manage placeholder, public route registration fix — verified and committed.
+## Stage 3 — Committed ✓ · Stage 4B — Committed ✓ · Stage 4C — Committed ✓
 
 ---
 
@@ -33,41 +27,38 @@ Ownership columns, manage placeholder, public route registration fix — verifie
 |-------|--------|
 | 4A Planning | ✓ Complete |
 | 4B DB + models + ownership | ✓ Committed |
-| 4C Owner response form | ✓ Verified (12 manual checks) — **ready to commit** |
-| 4D Account dashboard pages | Not started |
+| 4C Owner response form | ✓ Committed |
+| 4D Account dashboard pages | ✓ Verified (10 manual checks) — **ready to commit** |
 | 4E Guest manage token page (full) | Not started |
 | 4F Report / mark found / admin | Not started |
 
 **Goal:** Automated tenant ↔ owner lead exchange using existing Homzen `/account` dashboard.
 
-### Stage 4C — Founder verification (2026-06-08) ✓
+### Stage 4D — Founder verification (2026-06-08) ✓
 
-1. Approved `/room-requests/{slug}` shows owner response form
-2. Owner can submit response
-3. Success message after submit
-4. Response stored in `room_request_responses`
-5. Response status is `visible`
-6. Tenant phone not visible to owner
-7. Tenant email not visible to owner
-8. Tenant full name not visible to owner
-9. Response not publicly listed on request page
-10. `/post-room-need` still works
-11. `/room-requests` still works
-12. Admin room request approval still works
+1. `/account/dashboard` still works
+2. Account sidebar shows **My Room Requests**
+3. `/account/room-requests` opens
+4. Tenant only sees their own room requests
+5. Request detail opens
+6. Owner responses appear inside tenant dashboard
+7. Owner phone visible to tenant
+8. Tenant phone still hidden on public request page
+9. `/account/properties` still works
+10. Existing public room request pages still work
 
-### Stage 4C delivered
+### Stage 4D delivered
 
-- Owner response form on `/room-requests/{slug}` — “I have a matching room”
-- `POST /room-requests/{slug}/respond` (`public.room-request.respond`)
-- Stores `room_request_responses` with `status = visible`, `ip_address`, optional `responder_account_id`
-- Honeypot + throttle: 10 responses/IP/day (Laravel limiter) + 3 responses/IP/day per request (DB check)
-- Success message on detail page after submit
-- Tenant privacy: public detail shows `public_name` only — no tenant phone, email, or full name to owners
-- Responses not listed publicly on detail page (tenant views in 4D/4E)
+- Sidebar: **My Room Requests** via `DashboardMenu::for('account')` in plugin (always visible)
+- Routes: `GET /account/room-requests`, `GET /account/room-requests/{id}` with Homzen account middleware stack
+- `AccountRoomRequestController` — index (scoped to `account_id`) + show (404 if not owner)
+- `attachByEmail` fallback on index/show
+- List: public name, location, budget, status, response count, dates, view action; empty state + Post Room Need CTA
+- Detail: request summary, public link if approved, owner responses (`visible` status only)
+- Layout: `plugins/real-estate::themes.dashboard.layouts.master` + `x-core::card` / table / list-group patterns
 
 ### Still deferred
 
-- **4D:** “My Room Requests” sidebar + account dashboard
 - **4E:** Full guest manage page with responses list
 - **4F:** Report, mark found, admin response moderation UI
 

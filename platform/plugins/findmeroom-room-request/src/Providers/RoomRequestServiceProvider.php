@@ -31,7 +31,7 @@ class RoomRequestServiceProvider extends ServiceProvider
             ->setNamespace('plugins/findmeroom-room-request')
             ->loadHelpers()
             ->loadAndPublishConfigurations(['permissions', 'room-request'])
-            ->loadRoutes()
+            ->loadRoutes(['web', 'account'])
             ->loadAndPublishViews()
             ->loadAndPublishTranslations()
             ->loadMigrations()
@@ -54,6 +54,17 @@ class RoomRequestServiceProvider extends ServiceProvider
                     'icon' => 'ti ti-home-search',
                     'route' => 'room-requests.index',
                     'permissions' => ['room-requests.index'],
+                ]);
+        });
+
+        DashboardMenu::for('account')->beforeRetrieving(function (): void {
+            DashboardMenu::make()
+                ->registerItem([
+                    'id' => 'cms-account-room-requests',
+                    'priority' => 2.5,
+                    'name' => 'plugins/findmeroom-room-request::room-request.account.menu',
+                    'url' => fn () => route('public.account.room-requests.index'),
+                    'icon' => 'ti ti-home-search',
                 ]);
         });
     }

@@ -5,6 +5,47 @@
 
 ---
 
+## 2026-06-08 — Stage 4D verified (docs only)
+
+**Founder confirmed 10 manual checks:** account dashboard + sidebar, tenant-scoped list/detail, owner responses in dashboard, owner phone to tenant, tenant phone hidden on public page, backward compatibility.
+
+**Status:** Stage 4D verified ✓ — **ready to commit**
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
+## 2026-06-08 — Stage 4D: tenant account dashboard pages
+
+**Task:** Logged-in tenants see room requests + owner responses in Homzen account dashboard.
+
+**Routes:** `GET /account/room-requests`, `GET /account/room-requests/{id}` (`public.account.room-requests.*`)
+
+**Files:**
+- `routes/account.php` — account middleware stack (matches real-estate)
+- `AccountRoomRequestController.php` — index + show, `attachByEmail` fallback
+- `account/index.blade.php`, `account/show.blade.php` — dashboard master layout
+- `RoomRequestServiceProvider.php` — `DashboardMenu::for('account')` sidebar item
+- `resources/lang/en/room-request.php` — account strings
+
+**Not built:** mark found, report, guest manage full page, admin response UI.
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
+## 2026-06-08 — Stage 4C committed (docs only)
+
+**Commit message:** *Add owner response form for room requests*
+
+**Founder confirmed:** Stage 4C committed. Owner response form complete.
+
+**Next:** Stage 4D — tenant account dashboard pages (reuse Homzen account dashboard layout). Do not start coding until founder gives Stage 4D build instruction.
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
 ## 2026-06-08 — Stage 4C verified (docs only)
 
 **Founder confirmed 12 manual checks:** owner form on approved detail, submit + success, `visible` status in DB, tenant privacy (no phone/email/full name), no public response list, backward compatibility (post-room-need, board, admin approval).

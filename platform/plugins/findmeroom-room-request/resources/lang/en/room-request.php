@@ -149,6 +149,23 @@ return [
         'responses_placeholder' => 'Owner responses will appear here after this feature is enabled.',
     ],
 
+    'account' => [
+        'menu' => 'My Room Requests',
+        'detail_title' => 'Room request: :name',
+        'empty_title' => 'You have not posted any room requests yet.',
+        'empty_subtitle' => 'Post your room need and owners can respond once it is approved.',
+        'post_need' => 'Post Room Need',
+        'col_title' => 'Request',
+        'col_responses' => 'Responses',
+        'back_to_list' => 'Back to my room requests',
+        'request_summary' => 'Request summary',
+        'public_link' => 'Public listing link',
+        'owner_responses' => 'Owner responses',
+        'no_responses_title' => 'No owner responses yet',
+        'no_responses_subtitle' => 'When owners respond to your approved listing, their room details will appear here.',
+        'received_at' => 'Received',
+    ],
+
     'actions' => [
         'approve' => 'Approve',
         'reject' => 'Reject',

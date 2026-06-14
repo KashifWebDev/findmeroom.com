@@ -64,3 +64,6 @@ storage/framework/maintenance.php
 AGENTS.md
 plans/templates/
 release-manifest.json
+
+composer.lock
+package-lock.json

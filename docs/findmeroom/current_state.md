@@ -1,25 +1,43 @@
 # FindMeRoom — Current State
 
-> **Last updated:** 2026-06-06 (Stage 4F verified — ready to commit)
+> **Last updated:** 2026-06-06 (Stage 5A — header/hero overlap dropped; docs sync)
 > **Sync docs:** Read this file before every coding task. Update this file after every coding task.
 
 ---
 
 ## Current stage
 
-**Stage 4 MVP lead exchange — complete (verified, ready to commit Stage 4F)**
+**Stage 5A — Homepage and Navigation Cleanup (planning complete)**
 
-Branch: `stage-4-account-lead-exchange`
+Branch: `stage-5a`
 
-**Plan:** `.cursor/plans/stage_4_account_lead_exchange.md`
+**Plan:** `.cursor/plans/stage_5a_homepage_navigation_cleanup.md`
 
-**Next:** Commit Stage 4F on `stage-4-account-lead-exchange`. Then pick post-MVP work from task queue (optional cron, email/WhatsApp/sitemap, SEO, blog).
+**Previous:** Stage 4 MVP lead exchange complete (4F committed).
+
+**Next:** Stage 5A admin cleanup (homepage, menu, widgets, theme options), then mobile QA (5A-Q). Header CTA code fix remains done.
 
 **Site navigation note:** Header and main menu links (e.g. Post Room Need, Room Requests) are managed from **Admin → Appearance → Menus** unless a specific in-page CTA is missing from code.
 
 ---
 
-## Stage 3 — Committed ✓ · Stage 4B–4E — Committed ✓ · Stage 4F — Verified ✓ (ready to commit) · Stage 4 MVP — Complete ✓
+## Stage 3 — Committed ✓ · Stage 4 MVP — Complete ✓ · Stage 5A — Planned ✓
+
+---
+
+## Stage 5A — Homepage and Navigation Cleanup
+
+| Item | Status |
+|------|--------|
+| Planning doc | ✓ `.cursor/plans/stage_5a_homepage_navigation_cleanup.md` |
+| Admin homepage/menu/footer cleanup | Pending — **admin first** |
+| Header CTA code fix | ✓ Done — `Submit Property` → `List Your Room` (URL unchanged: `public.account.properties.index`) |
+| Header/hero overlap CSS fix | **Dropped** — founder reverted style changes; current homepage look accepted |
+| Optional room-requests homepage shortcode | Deferred — not required for MVP homepage |
+
+**Rule:** Admin dashboard for CMS pages, menus, widgets, theme options. Code only when admin cannot control (header CTA confirmed hardcoded).
+
+**Do not reopen:** Header/hero overlap visual issue unless founder explicitly requests it later.
 
 ---
 
@@ -109,6 +127,7 @@ After coding: also update `current_state.md` and `cursor_log.md`.
 | Doc | Path |
 |-----|------|
 | Stage 4 plan | `.cursor/plans/stage_4_account_lead_exchange.md` |
+| Stage 5A plan | `.cursor/plans/stage_5a_homepage_navigation_cleanup.md` |
 | Decisions | `docs/findmeroom/decisions.md` |
 | Task queue | `docs/findmeroom/task_queue.md` |
 | Work log | `docs/findmeroom/cursor_log.md` |

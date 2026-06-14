@@ -26,7 +26,7 @@
                     <div class="header-account">
                         @if (is_plugin_active('real-estate') && RealEstateHelper::isLoginEnabled())
                             <div class="flat-bt-top">
-                                <a class="tf-btn primary" href="{{ route('public.account.properties.index') }}">{{ __('Submit Property') }}</a>
+                                <a class="tf-btn primary" href="{{ route('public.account.properties.index') }}">{{ __('List Your Room') }}</a>
                             </div>
                         @endif
                     </div>
@@ -58,7 +58,7 @@
                                 <x-core::icon name="ti ti-plus" />
                             </div>
                             <div class="add-listing-text-wrapper">
-                                <span class="add-listing-title">{{ __('Submit Property') }}</span>
+                                <span class="add-listing-title">{{ __('List Your Room') }}</span>
                                 <span class="add-listing-subtitle">{{ __('List your property') }}</span>
                             </div>
                             <x-core::icon name="ti ti-arrow-right" class="add-listing-arrow" />

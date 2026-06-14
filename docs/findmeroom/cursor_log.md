@@ -5,6 +5,79 @@
 
 ---
 
+## 2026-06-06 — Stage 5A: header/hero overlap dropped (founder decision, docs only)
+
+**Decision:** Founder reverted all Stage 5A header/hero overlap style changes (`_custom.scss`, `style.css`, related hero shortcode edits). Visual issue not worth further time; current homepage appearance accepted.
+
+**Still done:** Header CTA — `Submit Property` → `List Your Room` in `header.blade.php`.
+
+**Stage 5A continues with:** Admin cleanup (5A-A), then mobile QA (5A-Q).
+
+**Do not reopen** header/hero overlap CSS unless founder explicitly asks later.
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
+## 2026-06-06 — Stage 5A: header/hero overlap follow-up fix
+
+**Issue:** Hero image still visible in thin topbar strip above navbar (especially left side). Main navbar white; topbar not fully white full width.
+
+**Root cause:** `.top-header` was `position: static` with no z-index while `.flat-slider` has `z-index: 123`, so hero painted over the topbar. Compiled `style.css` override (line 3) omitted `.top-header` rules from SCSS.
+
+**Fix:** `_custom.scss` + `public/css/style.css` — `position: relative; z-index: 1001` on `.top-header`; full-viewport white bleed (`box-shadow` + `clip-path`); white bg on `.top-header-left`, `.top-header-right`, `.ae-anno-announcement-wrapper`; `#header.main-header` same bleed; `.flat-slider { z-index: 1 }` under header stack.
+
+**Commands:** `cache:clear`, `route:clear`, `view:clear` — OK.
+
+**Founder:** Hard refresh browser (Ctrl + F5).
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
+## 2026-06-06 — Stage 5A: header/hero overlap CSS fix
+
+**Issue:** Homepage hero image visible behind topbar/navbar.
+
+**Root cause:** Hero style 1/3 uses `background-attachment: fixed` (viewport-fixed bg paints behind header). Optional `header-style-2` transparent header could apply when `transparent_header` was any truthy string (including `"no"`).
+
+**Fix:** `_custom.scss` + compiled `public/css/style.css` — solid `#ffffff` on `.top-header` + `.main-header` stack, z-index 1000+, override transparent `header-style-2`, set hero `background-attachment: scroll`. Strict `transparent_header === 'yes'` in hero style-5 blade.
+
+**Commands:** `cache:clear`, `route:clear`, `view:clear` — OK.
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
+## 2026-06-06 — Stage 5A: header CTA theme fix
+
+**Change:** Desktop + mobile hardcoded header button label `Submit Property` → `List Your Room`. URL unchanged: `route('public.account.properties.index')`.
+
+**File:** `platform/themes/homzen/partials/header.blade.php`
+
+**Commands:** `cache:clear`, `route:clear`, `view:clear` — OK.
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
+## 2026-06-06 — Stage 5A planning: homepage and navigation cleanup
+
+**Task:** Planning only — audit Homzen demo homepage, classify admin vs code work, document menu/homepage/footer cleanup.
+
+**Plan created:** `.cursor/plans/stage_5a_homepage_navigation_cleanup.md`
+
+**Key findings:**
+- Homepage = CMS page shortcodes (Admin → Pages); demo content removable from admin
+- Main menu = Admin → Appearance → Menus
+- Footer = Admin → Appearance → Widgets + Theme Options copyright
+- Header “Submit Property” = hardcoded `platform/themes/homzen/partials/header.blade.php` — **needs code**
+- No `[room-requests]` shortcode — use admin call-to-action or optional future code
+
+**Updated:** current_state.md ✓, task_queue.md ✓, cursor_log.md ✓
+
+---
+
 ## 2026-06-06 — Stage 4F verified (docs only)
 
 **Founder confirmed 16 manual checks:** mark found (account + guest), non-public + off board + blocked owner form, report response (account + guest) + hidden from tenant, admin list + visible/reject/spam moderation, backward compatibility on all public/account/manage routes.
